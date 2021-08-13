@@ -53,19 +53,19 @@ RUN chmod -R 777 /usr/local/jetty
 RUN adduser --system --group spring
 USER spring:spring
 
-# Copy application.properties
-COPY manager-server/src/main/resources/application.properties /var/lib/jetty/application.properties
+# Copy application.yml
+COPY manager-server/src/main/resources/application.yml /var/lib/jetty/application.yml
 
 HEALTHCHECK --interval=5m --timeout=3s \
   CMD curl -f http://localhost:8080/ || exit 1
 
 # "If any build steps change the data within the volume after it has been declared, those changes will be discarded".
 # see also: https://docs.docker.com/engine/reference/builder/#volume
-VOLUME ["/var/lib/jetty/application.properties"]
+VOLUME ["/var/lib/jetty/application.yml"]
 VOLUME ["/logs"]
 #VOLUME ["/conf"]
 
 ARG JAR_FILE=manager-server/target/*.jar
 COPY ${JAR_FILE} /var/lib/jetty/app.jar
-ENTRYPOINT java ${JAVA_OPTIONS} -jar /var/lib/jetty/app.jar --spring.config.location=file:///var/lib/jetty/application.properties\
+ENTRYPOINT java ${JAVA_OPTIONS} -jar /var/lib/jetty/app.jar --spring.config.location=file:///var/lib/jetty/application.yml\
     ${SPRING_PROPERTIES}
