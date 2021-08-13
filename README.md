@@ -18,6 +18,19 @@ This solution tries to solve this problems in a form of a centralized angular ma
 The manager-server provides a nice UI to administrate your servers, your playbooks and roles, create templates and execution plans (e.q. "execute a playbook every night at 4.00 a clock") and so on.
 Its also for CI / CD approaches and quick deployments of complex systems or clusters of servers.
 
+# HowTo use
+
+**Requirements**:
+  - A **mysql** / **mariadb** or a **postgresql** database
+  - actual optional: RabbitMQ Server for messaging
+
+The CI Server automatically builds a current docker image, if the build was successful.
+You have to start 2 docker containers with the same database:
+  - jukusoft/anman-manager
+    * https://hub.docker.com/r/jukusoft/anman-manager
+  - jukusoft/anman-worker
+    * https://hub.docker.com/r/jukusoft/anman-worker
+
 # the roadmap
 
 ## August 2021
