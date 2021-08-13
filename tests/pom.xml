@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anman-worker-node</artifactId>
+    <artifactId>anman-tests</artifactId>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
@@ -26,41 +26,32 @@
         </dependency>
         <dependency>
             <groupId>com.jukusoft</groupId>
-            <artifactId>spring-jwt-authentification</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <artifactId>anman-manager-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jukusoft</groupId>
+            <artifactId>anman-worker-node</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
+    <!-- see also: https://github.com/SonarSource/sonar-scanning-examples/tree/master/sonarqube-scanner-maven/maven-multimodule -->
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <!-- <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
-                <executions> -->
-                <!-- to avoid bugs in some situations -->
-                <!-- <execution>
-                    <id>default-prepare-agent</id>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
-                </execution> -->
-
-                <!-- create report during maven verify phase -->
-                <!-- <execution>
-                    <id>report</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
+                <executions>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
 
