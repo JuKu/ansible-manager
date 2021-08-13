@@ -1,14 +1,22 @@
 package com.jukusoft.anman.worker;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * main class.
  *
  * @author Justin Kuenzel
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.jukusoft.anman")
+@PropertySource({"classpath:base.properties"})
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
 public class WorkerNodeApplication {
 
     /**

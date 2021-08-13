@@ -19,4 +19,9 @@ public class AnManagerBackendApplicationTest {
         //
     }
 
+    @Test
+    public void testBasePropertiesFileLoaded() {
+        //
+    }
+
 }
