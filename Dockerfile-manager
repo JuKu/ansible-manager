@@ -65,7 +65,7 @@ HEALTHCHECK --interval=5m --timeout=3s \
 
 # "If any build steps change the data within the volume after it has been declared, those changes will be discarded".
 # see also: https://docs.docker.com/engine/reference/builder/#volume
-VOLUME ["/var/lib/jetty/application.yml"]
+#VOLUME ["/var/lib/jetty/application.yml"]
 VOLUME ["/logs"]
 #VOLUME ["/conf"]
 
