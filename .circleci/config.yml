@@ -29,10 +29,19 @@ jobs:
           version: 20.10.6
       - run:
           name: Build docker image for manager
-          command: docker build -t jukusoft/anman-manager:$CIRCLE_BRANCH-latest -f Dockerfile-manager --build-arg JAR_FILE=manager-server/target/*.jar .
+          command: docker build -t jukusoft/anman-manager:${CIRCLE_BRANCH}-latest -f Dockerfile-manager --build-arg JAR_FILE=manager-server/target/*.jar .
       - run:
           name: Build docker image for worker node
-          command: docker build -t jukusoft/anman-worker:$CIRCLE_BRANCH-latest -f Dockerfile-manager --build-arg JAR_FILE=worker-node/target/*.jar .
+          command: docker build -t jukusoft/anman-worker:${CIRCLE_BRANCH}-latest -f Dockerfile-manager --build-arg JAR_FILE=worker-node/target/*.jar .
+      - run:
+          name: Docker login
+          command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run:
+          name: Push docker image for manager
+          command: docker push jukusoft/anman-manager:${CIRCLE_BRANCH}-latest
+      - run:
+          name: Push docker image for worker node
+          command: docker push jukusoft/anman-worker:${CIRCLE_BRANCH}-latest
   #docker-image:
   #  docker:
   #    - image: cimg/openjdk:16.0
