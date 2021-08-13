@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Justin Kuenzel
  */
 @SpringBootApplication
-public class AnsibleManagerBackendApplication {
+public class AnManagerBackendApplication {
 
     /**
      * main method.
@@ -17,7 +17,7 @@ public class AnsibleManagerBackendApplication {
      * @param args program arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(AnsibleManagerBackendApplication.class, args);
+        SpringApplication.run(AnManagerBackendApplication.class, args);
     }
 
 }
