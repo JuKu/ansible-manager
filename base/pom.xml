@@ -12,10 +12,9 @@
     <artifactId>anman-base</artifactId>
     <dependencies>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
-            <scope>compile</scope>
+            <groupId>com.jukusoft</groupId>
+            <artifactId>spring-jwt-authentification</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
