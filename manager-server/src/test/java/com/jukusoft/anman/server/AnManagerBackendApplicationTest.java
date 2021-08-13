@@ -28,7 +28,7 @@ public class AnManagerBackendApplicationTest {
     }
 
     /**
-     * verify, that the base.yml file from the base-dependency can be loaded successfully.
+     * verify, that the base.properties file from the base-dependency can be loaded successfully.
      */
     @Test
     public void testBasePropertiesFileLoaded() {

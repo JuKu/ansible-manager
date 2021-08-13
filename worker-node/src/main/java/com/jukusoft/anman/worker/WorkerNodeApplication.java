@@ -17,7 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author Justin Kuenzel
  */
 @SpringBootApplication(scanBasePackages = {"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
-@PropertySource({"classpath:base.yml"})
+@PropertySource({"classpath:base.properties"})
 //@Configuration
 //@ComponentScan
 @EnableCaching
