@@ -3,9 +3,13 @@ package com.jukusoft.anman.worker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * main class.
@@ -14,9 +18,12 @@ import org.springframework.context.annotation.PropertySource;
  */
 @SpringBootApplication(scanBasePackages = {"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
 @PropertySource({"classpath:base.yml"})
-@Configuration
-@ComponentScan
-@EnableAutoConfiguration
+//@Configuration
+//@ComponentScan
+@EnableCaching
+@EnableScheduling
+@EntityScan({"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
+@EnableJpaRepositories({"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
 public class WorkerNodeApplication {
 
     /**
