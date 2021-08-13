@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
  * @author Justin Kuenzel
  */
 @SpringBootApplication(scanBasePackages = "com.jukusoft.anman")
-@PropertySource({"classpath:base.properties"})
+@PropertySource({"classpath:base.yml"})
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration

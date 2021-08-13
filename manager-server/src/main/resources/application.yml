@@ -1,0 +1,66 @@
+spring:
+  flyway:
+    sql-migration-prefix: V
+    repeatable-sql-migration-prefix: R
+    sql-migration-separator: __
+    sql-migration-suffixes: .sql
+
+jwt:
+  # this is required for authentification service itself to generate the JWT tokens
+  expiration: 604800
+  # this is required for JWT filter, to validate the JWT tokens
+  header: Authorization
+  # this is required for JWT filter, to validate the JWT tokens
+  secret: mySecret
+
+file:
+  encoding: UTF-8
+
+database:
+  type: h2
+  ip: 127.0.0.1
+  port: 3306
+  name: browsergame
+
+  #only used for "real" database
+  username: sa
+  password: sa
+
+  #only used for "real" database, for mysql: com.mysql.cj.jdbc.Driver
+  driver.class.name: org.h2.Driver
+
+  #only used for sqlite database
+  sqlite:
+    file: my-database.dat
+
+  # for mysql dialect: org.hibernate.dialect.MySQL55Dialect
+hibernate:
+  hbm2ddl.auto: update
+  dialect: org.hibernate.dialect.H2Dialect
+
+######## H2 Database Debug Configuration ########
+
+# see also: https://howtodoinjava.com/spring-boot2/h2-database-example/
+
+# Enabling H2 Console
+spring.h2.console.enabled: true
+
+# Custom H2 Console URL
+spring.h2.console.path: /h2
+
+# Swagger Config
+swagger:
+  enabled: true
+  title: AnMan Manager Server
+  description: AnMan Manager Server
+  contact.name: Justin Kuenzel
+  contact.url: http://jukusoft.com
+  contact.mail: info[at]jukusoft.com
+  license.name: "Apache 2.0"
+  license.url: "http://www.apache.org/licenses/"
+  version: 1.0.0
+
+initial:
+  import:
+    enabled: true
+

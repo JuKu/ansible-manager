@@ -1,0 +1,71 @@
+################################################
+# Build the docker image for AnMan backend     #
+################################################
+
+FROM openjdk:16-alpine
+USER root
+
+RUN apt-get update && apt-get install -y \
+        curl \
+        git \
+        nano
+
+ENV JAVA_OPTIONS -Dtestkey=testvalue
+ENV SPRING_PROPERTIES --name="Spring"
+
+# environmental variables
+
+# secret key to sign jwt tokens
+ENV JWT_SECRET mySecret
+
+# database configuration
+ENV DATABASE_TYPE mysql
+ENV DATABASE_HOST 127.0.0.1
+ENV DATABASE_PORT 3306
+ENV DATABASE_NAME anman
+ENV DATABASE_USER root
+ENV DATABASE_PASSWORD test1234
+ENV DATABASE_DRIVER com.mysql.cj.jdbc.Driver
+
+# swagger configuration
+ENV SWAGGER_ENABLED true
+
+# logger configuration
+log4j.appender.file.File /logs/logging.log
+
+ENV JETTY_HOME=/usr/local/jetty
+ENV JETTY_BASE=/var/lib/jetty
+ENV TMPDIR=/tmp/jetty
+WORKDIR /var/lib/jetty
+
+RUN mkdir -p /var/lib/jetty/logs
+RUN chmod -R 777 /var/lib/jetty/logs
+RUN mkdir -p /logs
+RUN chmod -R 777 /logs
+
+#RUN chmod -R 777 /conf
+
+# give permissions to this file to allow creating temporary files
+RUN mkdir -p /usr/local/jetty
+RUN chmod -R 777 /usr/local/jetty
+
+# Create Spring user
+RUN adduser --system --group spring
+USER spring:spring
+
+# Copy application.properties
+COPY manager-server/src/main/resources/application.properties /var/lib/jetty/application.properties
+
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:8080/ || exit 1
+
+# "If any build steps change the data within the volume after it has been declared, those changes will be discarded".
+# see also: https://docs.docker.com/engine/reference/builder/#volume
+VOLUME ["/var/lib/jetty/application.properties"]
+VOLUME ["/logs"]
+#VOLUME ["/conf"]
+
+ARG JAR_FILE=manager-server/target/*.jar
+COPY ${JAR_FILE} /var/lib/jetty/app.jar
+ENTRYPOINT java ${JAVA_OPTIONS} -jar /var/lib/jetty/app.jar --spring.config.location=file:///var/lib/jetty/application.properties\
+    ${SPRING_PROPERTIES}

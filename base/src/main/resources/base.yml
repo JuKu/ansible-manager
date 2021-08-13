@@ -1,0 +1,24 @@
+#
+# shared property file for both applications.
+#
+
+test:
+  property: test
+
+spring:
+  flyway:
+    sql-migration-prefix: V
+    repeatable-sql-migration-prefix: R
+    sql-migration-separator: __
+    sql-migration-suffixes: .sql
+
+jwt:
+  # this is required for authentification service itself to generate the JWT tokens
+  expiration: 604800
+  # this is required for JWT filter, to validate the JWT tokens
+  header: Authorization
+  # this is required for JWT filter, to validate the JWT tokens
+  secret: mySecret
+
+file:
+  encoding: UTF-8
