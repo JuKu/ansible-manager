@@ -2,6 +2,7 @@ package com.jukusoft.anman.worker.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,6 +20,7 @@ public class PasswordConfig {
      * @return password encoder
      */
     @Bean
+    @Primary
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
