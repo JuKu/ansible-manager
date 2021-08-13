@@ -31,7 +31,7 @@ ENV DATABASE_DRIVER com.mysql.cj.jdbc.Driver
 ENV SWAGGER_ENABLED true
 
 # logger configuration
-log4j.appender.file.File /logs/logging.log
+ENV LOGGING_PATH /logs/logging.log
 
 ENV JETTY_HOME=/usr/local/jetty
 ENV JETTY_BASE=/var/lib/jetty
