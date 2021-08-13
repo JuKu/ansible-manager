@@ -26,7 +26,7 @@ jobs:
           name: Sonarqube
           command: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=jukusoft -Dsonar.login=${SONAR_TOKEN}
       - setup_remote_docker:
-          version: 19.03.13
+          version: 20.10.6
       - run:
           name: Build docker image for manager
           command: docker build -t jukusoft/anman-manager:$CIRCLE_BRANCH-latest -f Dockerfile-manager --build-arg JAR_FILE=manager-server/target/*.jar .
