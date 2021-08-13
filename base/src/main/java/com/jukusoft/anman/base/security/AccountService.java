@@ -3,7 +3,6 @@ package com.jukusoft.anman.base.security;
 import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
 import com.jukusoft.authentification.jwt.account.IAccountService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,7 +45,6 @@ public class AccountService implements IAccountService {
      *
      * @param username username
      * @param password password
-     *
      * @return optional with account, if credentials are correct, else empty optional
      */
     @Override

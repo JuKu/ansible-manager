@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-public class AccountServiceTest {
+class AccountServiceTest {
 
     /**
      * the password encoder.
@@ -37,7 +37,7 @@ public class AccountServiceTest {
      * verify, that the constructor works correct.
      */
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         new AccountService(Mockito.mock(UserDAO.class), passwordEncoder);
     }
 
@@ -45,7 +45,7 @@ public class AccountServiceTest {
      * check, that a valid login works.
      */
     @Test
-    public void testLogin() {
+    void testLogin() {
         UserDAO userDAO = Mockito.mock(UserDAO.class);
         UserEntity user = new UserEntity("test", "test", "test");
         String encodedPassword = passwordEncoder.encode("test1234");
@@ -62,7 +62,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void testWrongLogin() {
+    void testWrongLogin() {
         UserDAO userDAO = Mockito.mock(UserDAO.class);
         UserEntity user = new UserEntity("test", "test", "test");
         String encodedPassword = passwordEncoder.encode("test5678");
