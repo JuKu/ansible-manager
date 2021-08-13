@@ -13,7 +13,6 @@
         <module>manager-server</module>
         <module>worker-node</module>
         <module>worker-node</module>
-        <module>untitled</module>
         <module>worker-node</module>
     </modules>
 
