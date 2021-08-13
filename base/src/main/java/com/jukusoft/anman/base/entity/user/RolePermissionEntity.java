@@ -3,6 +3,7 @@ package com.jukusoft.anman.base.entity.user;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Cacheable//use second level cache
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @IdClass(RolePermissionID.class)
-public class RolePermissionEntity {
+public class RolePermissionEntity implements Serializable {
 
     @Id
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
