@@ -1,5 +1,6 @@
 # A Manager Server for Ansible
 
+[![Build Status](https://travis-ci.com/JuKu/ansible-manager.svg?branch=master)](https://travis-ci.com/JuKu/ansible-manager)
 [![CircleCI](https://circleci.com/gh/JuKu/ansible-manager/tree/master.svg?style=svg)](https://circleci.com/gh/JuKu/ansible-manager/tree/master)
 
 A ansible manager / server as an alternative to Ansible semaphore and ansible tower.
