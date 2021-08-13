@@ -24,6 +24,14 @@
     <name>ansible-manager-backend</name>
     <description>A ansible manager / server as an alternative to Ansible semaphore and ansible tower</description>
 
+    <developers>
+        <developer>
+            <name>Justin Kuenzel</name>
+            <organization>none</organization>
+            <organizationUrl>http://jukusoft.com</organizationUrl>
+        </developer>
+    </developers>
+
     <repositories>
         <repository>
             <id>oss.sonatype.org-snapshot</id>
@@ -40,13 +48,17 @@
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-    </properties>
 
-    <!-- <sonar.coverage.jacoco.xmlReportPaths>
-        ${project.basedir}/../manager-server/target/site/jacoco-aggregate/jacoco.xml,
-        ${project.basedir}/../../manager-server/target/site/jacoco-aggregate/jacoco.xml,
-        ${project.basedir}/../../../manager-server/target/site/jacoco-aggregate/jacoco.xml
-    </sonar.coverage.jacoco.xmlReportPaths> -->
+        <!-- Sonar properties-->
+        <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+
+        <!-- file encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -144,11 +156,31 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
-                    <execution>
+                    <!-- <execution>
                         <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                    </execution> -->
+                    <execution>
+                        <id>agent-for-ut</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${sonar.jacoco.reportPath}</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>agent-for-it</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <append>true</append>
+                            <destFile>${sonar.jacoco.itReportPath}</destFile>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

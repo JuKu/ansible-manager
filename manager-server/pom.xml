@@ -65,21 +65,21 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
-                <executions>
+                <executions> -->
                     <!-- to avoid bugs in some situations -->
-                    <execution>
+                    <!-- <execution>
                         <id>default-prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                    </execution>
+                    </execution> -->
 
                     <!-- create report during maven verify phase -->
-                    <execution>
+                    <!-- <execution>
                         <id>report</id>
                         <phase>verify</phase>
                         <goals>
@@ -87,7 +87,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 
