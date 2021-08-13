@@ -32,6 +32,10 @@ public abstract class AbstractEntity implements Serializable {
         return id;
     }
 
+    public void forceID(long id) {
+        this.id = id;
+    }
+
     public ZonedDateTime getCreationDateTime() {
         return creationDateTime;
     }

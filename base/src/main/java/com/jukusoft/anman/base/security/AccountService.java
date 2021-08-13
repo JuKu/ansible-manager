@@ -3,6 +3,7 @@ package com.jukusoft.anman.base.security;
 import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
 import com.jukusoft.authentification.jwt.account.IAccountService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,14 +20,26 @@ import java.util.Optional;
 @Qualifier("iAccountService")
 public class AccountService implements IAccountService {
 
-    @Autowired
+    /**
+     * user DAO.
+     */
     private UserDAO userDAO;
 
     /**
      * the password encoder.
      */
-    @Autowired(required = false)
     private PasswordEncoder passwordEncoder;
+
+    /**
+     * constructor.
+     *
+     * @param userDAO
+     * @param passwordEncoder
+     */
+    public AccountService(@Autowired UserDAO userDAO, @Autowired(required = false) PasswordEncoder passwordEncoder) {
+        this.userDAO = userDAO;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * try to login the user.
