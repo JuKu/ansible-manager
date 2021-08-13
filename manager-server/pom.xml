@@ -23,12 +23,12 @@
             <version>${project.version}</version>
         </dependency>
         <!-- required for JaCoCo reports -->
-        <dependency>
+        <!-- <dependency>
             <groupId>com.jukusoft</groupId>
             <artifactId>anman-worker-node</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>com.jukusoft</groupId>
             <artifactId>spring-jwt-authentification</artifactId>
