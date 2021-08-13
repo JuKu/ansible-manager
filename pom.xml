@@ -55,7 +55,7 @@
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin> -->
-        
+
         <sonar.language>java</sonar.language>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 
@@ -64,6 +64,7 @@
 
         <!-- see also: https://docs.sonarqube.org/latest/analysis/coverage/ -->
         <sonar.coverage.jacoco.xmlReportPaths>tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverageReportPaths>tests/target/site/jacoco-aggregate/*</sonar.coverageReportPaths>
 
         <!-- file encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
