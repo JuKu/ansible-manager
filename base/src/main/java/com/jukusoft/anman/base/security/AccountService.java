@@ -24,7 +24,7 @@ public class AccountService implements IAccountService {
     /**
      * the password encoder.
      */
-    @Autowired
+    @Autowired(required = false)
     private PasswordEncoder passwordEncoder;
 
     /**

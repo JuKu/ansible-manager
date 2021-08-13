@@ -22,6 +22,11 @@
             <artifactId>anman-base</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.jukusoft</groupId>
+            <artifactId>spring-jwt-authentification</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
