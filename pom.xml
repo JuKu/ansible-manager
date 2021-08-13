@@ -58,6 +58,8 @@
 
         <!-- see also: https://github.com/SonarSource/sonar-scanning-examples/blob/master/sonarqube-scanner-maven/maven-multimodule/pom.xml -->
         <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+
+        <!-- see also: https://docs.sonarqube.org/latest/analysis/coverage/ -->
         <sonar.coverage.jacoco.xmlReportPaths>tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- file encoding -->
