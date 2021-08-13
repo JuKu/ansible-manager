@@ -32,7 +32,8 @@ after_success:
   - echo "$TRAVIS_BRANCH"
 #  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { mvn deploy --settings .maven.xml -DuniqueVersion=false; };"
 # Build docker image and push to Docker Hub
-  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { docker build -t jukusoft/anman-manager:latest -f Dockerfile-manager . };"
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { docker build -t jukusoft/anman-manager:latest -f Dockerfile-manager --build-arg JAR_FILE=manager-server/target/*.jar . };"
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { docker build -t jukusoft/anman-worker:latest -f Dockerfile-manager --build-arg JAR_FILE=worker-node/target/*.jar . };"
   - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { echo \"$DOCKER_PASSWORD\" | docker login -u \"$DOCKER_USERNAME\" --password-stdin };"
   - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { docker push jukusoft/anman-manager:latest };"
 
