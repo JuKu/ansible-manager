@@ -54,7 +54,7 @@ RUN chmod -R 777 /usr/local/jetty
 # Create Spring user
 #RUN adduser --system --group spring
 RUN addgroup -S spring
-RUN adduser -S spring spring
+RUN adduser -S spring -G spring
 USER spring:spring
 
 # Copy application.yml
