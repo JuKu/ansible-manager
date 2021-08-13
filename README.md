@@ -1,5 +1,7 @@
 # A Manager Server for Ansible
 
+[![CircleCI](https://circleci.com/gh/JuKu/ansible-manager/tree/master.svg?style=svg)](https://circleci.com/gh/JuKu/ansible-manager/tree/master)
+
 A ansible manager / server as an alternative to Ansible semaphore and ansible tower.
 frontend: https://github.com/JuKu/ansible-manager-frontend
 
