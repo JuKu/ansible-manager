@@ -29,6 +29,13 @@ This solution tries to solve this problems in a form of a centralized angular ma
 The manager-server provides a nice UI to administrate your servers, your playbooks and roles, create templates and execution plans (e.q. "execute a playbook every night at 4.00 a clock") and so on.
 Its also for CI / CD approaches and quick deployments of complex systems or clusters of servers.
 
+# Why?
+
+At my job as a software engineer and network & server adminstrator at a startup in Dresden i try to make admistrative things faster and more efficient.
+We don't have the man power to spend much time in many recurring tasks, which are so linear, that they don't need a person who did this.
+But currently we did, because there is no solution which fits our needs. So we execute ansible playbooks manually, from the console, wait a much of time, edit many files instead of generating them and so on.
+So the thought was: This can be done better! So this is the idea, why is started this project.
+
 # HowTo use
 
 **Requirements**:
