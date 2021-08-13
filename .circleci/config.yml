@@ -29,10 +29,10 @@ jobs:
           version: 19.03.13
       - run:
           name: Build docker image for manager
-          command: docker build -t jukusoft/anman-manager:latest -f Dockerfile-manager --build-arg JAR_FILE=manager-server/target/*.jar .
+          command: docker build -t jukusoft/anman-manager:$CIRCLE_BRANCH-latest -f Dockerfile-manager --build-arg JAR_FILE=manager-server/target/*.jar .
       - run:
           name: Build docker image for worker node
-          command: docker build -t jukusoft/anman-worker:latest -f Dockerfile-manager --build-arg JAR_FILE=worker-node/target/*.jar .
+          command: docker build -t jukusoft/anman-worker:$CIRCLE_BRANCH-latest -f Dockerfile-manager --build-arg JAR_FILE=worker-node/target/*.jar .
   #docker-image:
   #  docker:
   #    - image: cimg/openjdk:16.0
