@@ -53,9 +53,11 @@ You have to start 2 docker containers with the same database:
 
 ## August 2021
 
-  - initialize project
+  - initialize project &#9745;
   - authentication
   - LDAP integration (test with FreeIPA)
   - permission system
   - inventory management
   - generation of inventory files
+
+//&#9744;
