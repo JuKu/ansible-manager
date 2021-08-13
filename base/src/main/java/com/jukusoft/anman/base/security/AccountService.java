@@ -1,5 +1,6 @@
 package com.jukusoft.anman.base.security;
 
+import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
 import com.jukusoft.authentification.jwt.account.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ import java.util.Optional;
 @Qualifier("iAccountService")
 public class AccountService implements IAccountService {
 
-    //@Autowired
-    //private UserDAO userDAO;
+    @Autowired
+    private UserDAO userDAO;
 
     /**
      * the password encoder.
@@ -37,12 +38,9 @@ public class AccountService implements IAccountService {
      */
     @Override
     public Optional<AccountDTO> loginUser(String username, String password) {
-        //TODO: add code here
-
-        /*return userDAO.findOneByUsername(username)
+        return userDAO.findOneByUsername(username)
                 .filter(account -> passwordEncoder.matches(password, account.getPassword()))
-                .map(user -> new AccountDTO(user.getId(), user.getUsername()));*/
-        return Optional.empty();
+                .map(user -> new AccountDTO(user.getId(), user.getUsername()));
     }
 
 }
