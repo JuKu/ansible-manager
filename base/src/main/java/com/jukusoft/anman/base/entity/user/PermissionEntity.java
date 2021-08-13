@@ -19,7 +19,7 @@ import java.io.Serializable;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PermissionEntity implements Serializable {
 
-    public static enum PermissionType {
+    public enum PermissionType {
         /*
          * a global permission for all users and all customers (e.q. super admin)
          */
