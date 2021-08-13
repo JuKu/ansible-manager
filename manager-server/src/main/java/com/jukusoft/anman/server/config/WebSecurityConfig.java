@@ -1,7 +1,5 @@
 package com.jukusoft.anman.server.config;
 
-//import com.jukusoft.authentification.jwt.config.JWTWebSecurityConfig;
-
 import com.jukusoft.authentification.jwt.config.JWTWebSecurityConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
