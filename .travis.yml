@@ -1,0 +1,40 @@
+language: java
+jdk:
+#  - openjdk11
+  - openjdk-ea
+  - openjdk16
+
+services:
+  - docker
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.sonar/cache
+    - $HOME/.cache
+    - $HOME/.m2
+
+#don't do a shallow clone (for sonarqube)
+git:
+  depth: 9999999
+
+script:
+  - mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - "if [ $TRAVIS_BRANCH == \"master\" ] && [ $TRAVIS_JDK_VERSION == \"openjdk16\" ] ; then { mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=jukusoft -Dsonar.login=${SONAR_TOKEN}; }; fi"
+
+after_success:
+  - "echo $TRAVIS_JDK_VERSION"
+  - echo "$TRAVIS_BRANCH"
+#  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { mvn deploy --settings .maven.xml -DuniqueVersion=false; };"
+# Build docker image and push to Docker Hub
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { docker build -t jukusoft/anman-manager:latest -f Dockerfile-manager . };"
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { echo \"$DOCKER_PASSWORD\" | docker login -u \"$DOCKER_USERNAME\" --password-stdin };"
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && [[ $TRAVIS_JDK_VERSION == \"openjdk16\" ]] && { docker push jukusoft/anman-manager:latest };"
+
+notifications:
+  email: false
