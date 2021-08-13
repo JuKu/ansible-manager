@@ -5,10 +5,12 @@
 FROM openjdk:16-alpine
 USER root
 
-RUN apt-get update && apt-get install -y \
-        curl \
-        git \
-        nano
+#RUN apt-get update && apt-get install -y \
+#        curl \
+#        git \
+#        nano
+
+RUN apk add --update curl git nano
 
 ENV JAVA_OPTIONS -Dtestkey=testvalue
 ENV SPRING_PROPERTIES --name="Spring"
