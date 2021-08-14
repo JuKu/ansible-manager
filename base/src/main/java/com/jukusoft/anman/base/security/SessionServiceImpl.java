@@ -25,8 +25,19 @@ import java.util.stream.Collectors;
 @Service
 public class SessionServiceImpl implements SessionService<UserEntity> {
 
-    @Autowired
+    /**
+     * the user dao.
+     */
     private UserDAO userDAO;
+
+    /**
+     * default constructor.
+     *
+     * @param userDAO user dao
+     */
+    public SessionServiceImpl(@Autowired UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @Override
     @Transactional
