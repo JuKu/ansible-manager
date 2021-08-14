@@ -22,8 +22,8 @@ public class DummyAuthProvider implements AuthProvider {
 	@Override
 	public Optional<ExtendedAccountDTO> login(String username, String password) {
 		if (username.equals("test") && password.equals("test1234")) {
-            return Optional.of(new ExtendedAccountDTO(2, username, username, username, new HashSet<String>()));
-        }
+			return Optional.of(new ExtendedAccountDTO(2, username, username, username, new HashSet<>()));
+		}
 
 		return Optional.empty();
 	}
