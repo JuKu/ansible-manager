@@ -43,8 +43,10 @@ class AccountServiceTest {
     @Test
     void testConstructor() {
         List<AuthProvider> authProviderList = new ArrayList<>();
-        authProviderList.add(new LocalDatabaseAuthProvider(Mockito.mock(UserDAO.class), new BCryptPasswordEncoder()));
-        new AccountService(Mockito.mock(UserDAO.class), authProviderList, "dummy-auth-provider");
+
+        assertThrows(IllegalArgumentException.class, () -> new AccountService(Mockito.mock(UserDAO.class), authProviderList, ""));
+        AccountService service = new AccountService(Mockito.mock(UserDAO.class), authProviderList, "dummy-auth-provider");
+        assertThrows(IllegalStateException.class, () -> service.init());
     }
 
     /**
