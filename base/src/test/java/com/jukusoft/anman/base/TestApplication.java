@@ -1,4 +1,4 @@
-package com.jukusoft.anman.server;
+package com.jukusoft.anman.base;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
