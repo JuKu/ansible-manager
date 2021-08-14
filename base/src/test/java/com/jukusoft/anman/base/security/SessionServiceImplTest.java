@@ -5,6 +5,8 @@ package com.jukusoft.anman.base.security;/*
  */
 
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.user.PermissionEntity;
+import com.jukusoft.anman.base.entity.user.RoleEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.authentification.jwt.account.UserAccount;
 import org.junit.jupiter.api.AfterAll;
@@ -35,6 +37,11 @@ public class SessionServiceImplTest {
         UserDAO userDAO = Mockito.mock(UserDAO.class);
         UserEntity userEntity = new UserEntity("test", "test", "test");
         userEntity.forceID(1);
+
+        RoleEntity roleEntity = new RoleEntity("test-role");
+        roleEntity.addPermission(new PermissionEntity("test", "test", PermissionEntity.PermissionType.GLOBAL));
+        userEntity.addRole(roleEntity);
+
         when(userDAO.findOneByUsername("test")).thenReturn(Optional.of(userEntity));
         when(userDAO.findById(anyLong())).thenReturn(Optional.of(userEntity));
         sessionService = new SessionServiceImpl(userDAO);
