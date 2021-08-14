@@ -15,13 +15,13 @@ import static org.mockito.Mockito.when;
  *
  * @author Justin Kuenzel
  */
-public class UniqueApplicationContextConfigTest {
+class UniqueApplicationContextConfigTest {
 
     /**
      * test the getter and setter to ensure, that the return always the same value.
      */
     @Test
-    public void testSetterAndGetter() {
+    void testSetterAndGetter() {
         UniqueApplicationContextConfig config = new UniqueApplicationContextConfig();
         ApplicationContext context = Mockito.mock(ApplicationContext.class);
         config.setApplicationContext(context);
@@ -42,7 +42,7 @@ public class UniqueApplicationContextConfigTest {
      * @throws ClassNotFoundException
      */
     @Test
-    public void testGetBean() throws ClassNotFoundException {
+    void testGetBean() throws ClassNotFoundException {
         UniqueApplicationContextConfig config = new UniqueApplicationContextConfig();
         ApplicationContext context = Mockito.mock(ApplicationContext.class);
         config.setApplicationContext(context);
@@ -56,7 +56,7 @@ public class UniqueApplicationContextConfigTest {
      * @throws ClassNotFoundException
      */
     @Test
-    public void testGetUnknownBean() throws ClassNotFoundException {
+    void testGetUnknownBean() throws ClassNotFoundException {
         UniqueApplicationContextConfig config = new UniqueApplicationContextConfig();
         ApplicationContext context = Mockito.mock(ApplicationContext.class);
         when(context.getBean(any(Class.class))).thenThrow(new NoSuchBeanDefinitionException(""));
