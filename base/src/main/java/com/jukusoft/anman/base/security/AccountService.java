@@ -84,6 +84,10 @@ public class AccountService implements IAccountService {
 
 		LOGGER.info("{} auth providers found, {} auth providers are enabled: {}", pluginsFound, authProviderList.size(), authProviderConfig);
 
+		if (authProviderList.isEmpty()) {
+			throw new IllegalStateException("{} authentication providers available, but no provider is enabled".formatted(pluginsFound));
+		}
+
 		//first, sort list by priority
 		Collections.sort(authProviderList);
 	}

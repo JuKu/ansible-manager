@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -42,11 +43,15 @@ class AccountServiceTest {
      */
     @Test
     void testConstructor() {
-        List<AuthProvider> authProviderList = new ArrayList<>();
+        List<AuthProvider> authProviderList = new CopyOnWriteArrayList<>();
 
         assertThrows(IllegalArgumentException.class, () -> new AccountService(Mockito.mock(UserDAO.class), authProviderList, ""));
         AccountService service = new AccountService(Mockito.mock(UserDAO.class), authProviderList, "dummy-auth-provider");
         assertThrows(IllegalStateException.class, () -> service.init());
+
+        authProviderList.add(new DummyAuthProvider());
+        AccountService service1 = new AccountService(Mockito.mock(UserDAO.class), authProviderList, "local-database");
+        assertThrows(IllegalStateException.class, () -> service1.init());
     }
 
     /**
