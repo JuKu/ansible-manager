@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 		"spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1"
 })
 @ActiveProfiles({"test"})
-public class LocalDatabaseAuthProviderTest {
+class LocalDatabaseAuthProviderTest {
 
 	@Autowired
 	private UserDAO userDAO;
