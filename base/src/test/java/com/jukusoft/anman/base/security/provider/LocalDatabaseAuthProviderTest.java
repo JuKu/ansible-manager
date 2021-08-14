@@ -3,7 +3,10 @@ package com.jukusoft.anman.base.security.provider;
 import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.entity.user.RoleEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
+import com.jukusoft.anman.base.security.AccountService;
+import com.jukusoft.anman.base.security.AuthProvider;
 import com.jukusoft.anman.base.security.ExtendedAccountDTO;
+import com.jukusoft.authentification.jwt.account.AccountDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,9 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,6 +94,29 @@ class LocalDatabaseAuthProviderTest {
 
 		//try to login with correct credentials
 		accountDTO = authProvider.login("test", "test1234");
+		assertTrue(accountDTO.isPresent());
+	}
+
+	@Test
+	void testProvider() {
+		List<AuthProvider> authProviderList = new ArrayList<>();
+		authProviderList.add(new LocalDatabaseAuthProvider(userDAO, new BCryptPasswordEncoder()));
+		AccountService service = new AccountService(userDAO, authProviderList, "local-database");
+		service.init();
+
+		Optional<AccountDTO> accountDTO = service.loginUser("test", "test1234");
+		assertTrue(accountDTO.isPresent());
+
+		//second test
+		authProviderList = new ArrayList<>();
+		authProviderList.add(new DummyAuthProvider());
+		service = new AccountService(userDAO, authProviderList, "dummy-auth-provider");
+		service.init();
+
+		accountDTO = service.loginUser("test5678", "test1234");
+		assertFalse(accountDTO.isPresent());
+
+		accountDTO = service.loginUser("test1234", "test1234");
 		assertTrue(accountDTO.isPresent());
 	}
 
