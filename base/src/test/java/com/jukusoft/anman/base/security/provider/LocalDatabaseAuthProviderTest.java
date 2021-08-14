@@ -18,11 +18,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 
 /*
  *
@@ -34,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 		"spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1"
 })
 @ActiveProfiles({"test"})
+@DirtiesContext(classMode = AFTER_CLASS)
 class LocalDatabaseAuthProviderTest {
 
 	@Autowired
