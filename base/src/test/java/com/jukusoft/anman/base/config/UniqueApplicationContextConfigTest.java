@@ -38,13 +38,15 @@ class UniqueApplicationContextConfigTest {
     }
 
     /**
-     * test, that requesting a known bean
-     * @throws ClassNotFoundException
+     * test, that requesting a known bean returns an object.
+     *
+     * @throws ClassNotFoundException if bean class does not exists
      */
     @Test
     void testGetBean() throws ClassNotFoundException {
         UniqueApplicationContextConfig config = new UniqueApplicationContextConfig();
         ApplicationContext context = Mockito.mock(ApplicationContext.class);
+        when(context.getBean(any(Class.class))).thenReturn("test");
         config.setApplicationContext(context);
 
         assertNotNull(UniqueApplicationContextConfig.getBean(String.class));
