@@ -49,6 +49,7 @@ public class UniqueApplicationContextConfig implements ApplicationContextAware {
 
     /**
      * set application context.
+     * This method is called from spring (ApplicationContextAware).
      *
      * @param context application context
      */
