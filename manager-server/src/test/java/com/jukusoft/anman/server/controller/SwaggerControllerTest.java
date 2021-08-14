@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Justin Kuenzel
  */
-public class SwaggerControllerTest {
+class SwaggerControllerTest {
 
     /**
      * check, that the redirect for /swagger works.
      */
     @Test
-    public void testRedirect() {
+    void testRedirect() {
         SwaggerController controller = new SwaggerController();
         assertTrue(controller.redirectToSwaggerUI().startsWith("redirect:"));
         assertEquals("redirect:/swagger-ui.html", controller.redirectToSwaggerUI());

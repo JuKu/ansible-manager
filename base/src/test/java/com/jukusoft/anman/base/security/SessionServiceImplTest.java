@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Justin Kuenzel
  */
-public class SessionServiceImplTest {
+class SessionServiceImplTest {
 
     /**
      * the session service to test.
@@ -33,7 +33,7 @@ public class SessionServiceImplTest {
     private static SessionServiceImpl sessionService;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         UserDAO userDAO = Mockito.mock(UserDAO.class);
         UserEntity userEntity = new UserEntity("test", "test", "test");
         userEntity.forceID(1);
@@ -48,7 +48,7 @@ public class SessionServiceImplTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         sessionService = null;
     }
 
@@ -56,7 +56,7 @@ public class SessionServiceImplTest {
      * tests, that a null user throws an NPE.
      */
     @Test
-    public void testFindNullUser() {
+    void testFindNullUser() {
         assertThrows(NullPointerException.class, () -> sessionService.findUser(null));
         assertThrows(IllegalStateException.class, () -> sessionService.findUser(""));
     }
@@ -65,7 +65,7 @@ public class SessionServiceImplTest {
      * test, that a unknown user throws an exception.
      */
     @Test
-    public void testFindUnknownUser() {
+    void testFindUnknownUser() {
         assertThrows(IllegalStateException.class, () -> sessionService.findUser("unknown-user"));
     }
 
@@ -73,7 +73,7 @@ public class SessionServiceImplTest {
      * test, that find a known user returns an user entity object
      */
     @Test
-    public void testFindUser() {
+    void testFindUser() {
         UserAccount userAccount = sessionService.findUser("test");
         assertNotNull(userAccount);
         assertEquals(UserAccount.class, userAccount.getClass());

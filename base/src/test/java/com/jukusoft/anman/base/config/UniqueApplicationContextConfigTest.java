@@ -47,7 +47,7 @@ class UniqueApplicationContextConfigTest {
         ApplicationContext context = Mockito.mock(ApplicationContext.class);
         config.setApplicationContext(context);
 
-        UniqueApplicationContextConfig.getBean(String.class);
+        assertNotNull(UniqueApplicationContextConfig.getBean(String.class));
     }
 
     /**
