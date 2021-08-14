@@ -63,7 +63,7 @@
         <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
 
         <!-- see also: https://docs.sonarqube.org/latest/analysis/coverage/ -->
-        <sonar.coverage.jacoco.xmlReportPaths>tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <!-- <sonar.coverageReportPaths>tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverageReportPaths> -->
 
         <!-- file encoding -->
