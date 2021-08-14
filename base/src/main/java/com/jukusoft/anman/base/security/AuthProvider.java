@@ -1,14 +1,21 @@
 package com.jukusoft.anman.base.security;
 
+import com.jukusoft.authentification.jwt.account.AccountDTO;
+import org.springframework.stereotype.Component;
+
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.ToIntFunction;
 
 /*
  * this interface is for auth provider plugins which can extend the application with new authenticaton mechanism like LDAP.
  *
  * @author Justin Kuenzel
  */
-public interface AuthProvider {
+@Component
+public interface AuthProvider extends Comparable<AuthProvider> {
 
     /**
      * get name of authentication provider.
@@ -18,14 +25,24 @@ public interface AuthProvider {
     public String getName();
 
     /**
+     * get the priority of the authentication provider.
+     * Lesser is better (1 - execute first, 10 - execute last).
+     *
+     * @return priority of authentication provider
+     */
+    public default int getPriority() {
+        return 5;
+    }
+
+    /**
      * try to login user.
      *
      * @param username username
      * @param password password
      *
-     * @return true, if credentials are correct, else false
+     * @return account object if credentials are correct, else empty object
      */
-    public boolean login(String username, String password);
+    public Optional<ExtendedAccountDTO> login(String username, String password);
 
     /**
      * list all roles of user.
@@ -43,5 +60,17 @@ public interface AuthProvider {
      * @return true, if the user has this role
      */
     public boolean hasRole(String username, String role);
+
+    /**
+     * compare to other objects.
+     *
+     * @param o other object
+     *
+     * @return -1, 0 or 1
+     */
+    @Override
+    default int compareTo(AuthProvider o) {
+        return Integer.compare(this.getPriority(), o.getPriority());
+    }
 
 }

@@ -1,14 +1,19 @@
 package com.jukusoft.anman.base.security;
 
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
 import com.jukusoft.authentification.jwt.account.IAccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 /**
  * the account service which is responsible for authentication.
@@ -20,24 +25,68 @@ import java.util.Optional;
 public class AccountService implements IAccountService {
 
     /**
-     * user DAO.
+     * the logger.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
+
+    /**
+     * the user dao.
      */
     private UserDAO userDAO;
 
     /**
-     * the password encoder.
+     * a list with all pluggable authentication providers, like local database, ldap and so on.
      */
-    private PasswordEncoder passwordEncoder;
+    private List<AuthProvider> authProviderList;
+
+    /**
+     * a comma-seperated list of activated authentication providers.
+     */
+    private String authProviderConfig;
 
     /**
      * constructor.
      *
-     * @param userDAO
-     * @param passwordEncoder
+     * @param authProviders list with authentication providers
      */
-    public AccountService(@Autowired UserDAO userDAO, @Autowired(required = false) PasswordEncoder passwordEncoder) {
+    public AccountService(@Autowired UserDAO userDAO, @Autowired List<AuthProvider> authProviders, @Value("${auth.providers}") String authProviderConfig) {
+        Objects.requireNonNull(authProviderConfig);
+
+        if (authProviderConfig.isEmpty()) {
+            throw new IllegalArgumentException("auth provider config cannot be null");
+        }
+
         this.userDAO = userDAO;
-        this.passwordEncoder = passwordEncoder;
+        this.authProviderList = authProviders;
+        this.authProviderConfig = authProviderConfig;
+    }
+
+    /**
+     * initialize the bean.
+     */
+    @PostConstruct
+    public void init() {
+        //check, that minimum one authentication provider is available
+        if (authProviderList.isEmpty()) {
+            throw new IllegalStateException("no authentication provider in classpath");
+        }
+
+        int pluginsFound = authProviderList.size();
+
+        //remove authentication providers, which are not enabled
+        Set<String> enabledAuthProviders = Set.of(authProviderConfig.split(","));
+
+        //remove disabled auth providers from list
+        for (AuthProvider authProvider : authProviderList) {
+            if (!enabledAuthProviders.contains(authProvider.getName())) {
+                authProviderList.remove(authProvider);
+            }
+        }
+
+        LOGGER.info("{} auth providers found, {} auth providers are enabled: {}", pluginsFound, authProviderList.size(), authProviderConfig);
+
+        //first, sort list by priority
+        Collections.sort(authProviderList);
     }
 
     /**
@@ -49,9 +98,26 @@ public class AccountService implements IAccountService {
      */
     @Override
     public Optional<AccountDTO> loginUser(String username, String password) {
-        return userDAO.findOneByUsername(username)
-                .filter(account -> passwordEncoder.matches(password, account.getPassword()))
-                .map(user -> new AccountDTO(user.getId(), user.getUsername()));
+        LOGGER.info("try to login user: {}", username);
+
+        for (AuthProvider authProvider : authProviderList) {
+            //try to login
+            Optional<ExtendedAccountDTO> accountDTO = authProvider.login(username, password);
+
+            if (accountDTO.isPresent()) {
+                //check, if user exists in database
+                if (userDAO.findOneByUsername(username).isEmpty()) {
+                    LOGGER.info("login user '{}' successfully, but user does not exists in database - create user in database now");
+                    UserEntity user = new UserEntity(username, accountDTO.get().getPreName(), accountDTO.get().getLastname());
+                    user.setPassword("not_local");
+                    userDAO.save(user);
+                }
+
+                return Optional.of(accountDTO.get());
+            }
+        }
+
+        return Optional.empty();
     }
 
 }

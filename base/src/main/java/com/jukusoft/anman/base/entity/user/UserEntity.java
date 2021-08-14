@@ -114,6 +114,14 @@ public class UserEntity extends AbstractEntity implements IAccount {
         this.salt = salt;
     }
 
+    public String getPrename() {
+        return prename;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
     public UserPreferencesEntity getUserPreferences() {
         if (userPreferences == null) {
             userPreferences = new UserPreferencesEntity(this);

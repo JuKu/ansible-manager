@@ -2,6 +2,8 @@ package com.jukusoft.anman.base.security;
 
 import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.entity.user.UserEntity;
+import com.jukusoft.anman.base.security.provider.DummyAuthProvider;
+import com.jukusoft.anman.base.security.provider.LocalDatabaseAuthProvider;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +12,8 @@ import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +42,9 @@ class AccountServiceTest {
      */
     @Test
     void testConstructor() {
-        new AccountService(Mockito.mock(UserDAO.class), passwordEncoder);
+        List<AuthProvider> authProviderList = new ArrayList<>();
+        authProviderList.add(new LocalDatabaseAuthProvider(Mockito.mock(UserDAO.class), new BCryptPasswordEncoder()));
+        new AccountService(Mockito.mock(UserDAO.class), authProviderList, "dummy-auth-provider");
     }
 
     /**
@@ -54,8 +60,11 @@ class AccountServiceTest {
         when(userDAO.findOneByUsername(anyString())).thenReturn(Optional.of(user));
 
         assertTrue(passwordEncoder.matches( "test1234", encodedPassword));
+        List<AuthProvider> authProviderList = new ArrayList<>();
+        authProviderList.add(new DummyAuthProvider());
 
-        AccountService service = new AccountService(userDAO, passwordEncoder);
+        AccountService service = new AccountService(userDAO, authProviderList, "dummy-auth-provider");
+        service.init();
         Optional<AccountDTO> accountDTO = service.loginUser("test", "test1234");
         assertTrue(accountDTO.isPresent());
         assertEquals(2, accountDTO.get().getUserID());
@@ -70,7 +79,9 @@ class AccountServiceTest {
         when(userDAO.findOneByUsername(anyString())).thenReturn(Optional.of(user));
 
         assertFalse(passwordEncoder.matches( "test1234", encodedPassword));
-        AccountService service = new AccountService(userDAO, passwordEncoder);
+
+        List<AuthProvider> authProviderList = new ArrayList<>();
+        AccountService service = new AccountService(userDAO, authProviderList, "dummy-auth-provider");
         Optional<AccountDTO> accountDTO = service.loginUser("test", "test1234");
         assertTrue(accountDTO.isEmpty());
     }
