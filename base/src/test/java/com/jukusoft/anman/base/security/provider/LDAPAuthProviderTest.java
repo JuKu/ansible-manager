@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles({"test"})
 @PropertySource({"classpath:base.properties", "classpath:test-ldap.properties"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class LDAPAuthProviderTest {
+class LDAPAuthProviderTest {
 
 	@Autowired
 	private LDAPConfig ldapConfig;
