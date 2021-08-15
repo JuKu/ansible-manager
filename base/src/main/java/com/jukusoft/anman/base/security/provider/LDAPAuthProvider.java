@@ -11,6 +11,7 @@ import org.springframework.ldap.CommunicationException;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.ldap.query.SearchScope;
 import org.springframework.stereotype.Service;
 
 import javax.naming.NamingEnumeration;
@@ -115,7 +116,7 @@ public class LDAPAuthProvider implements AuthProvider {
 			throw new IllegalStateException("ldap server is not reachable: " + ldapContextSource.getUrls()[0]);
 		} catch (AuthenticationException e) {
 			//credentials are wrong
-			LOGGER.info("ldap credentials are wrong for user: {}", generateUserCN(username), e);
+			LOGGER.info("ldap credentials are wrong for user: {}", generateUserCN(username));
 			return Optional.empty();
 		}
 	}
@@ -144,10 +145,16 @@ public class LDAPAuthProvider implements AuthProvider {
 		Objects.requireNonNull(template);
 		Objects.requireNonNull(username);
 
+		//compute baseDN for users
+		String baseDN = ldapConfig.getUsersOU() + "," + ldapConfig.getLdapBase();
+
 		//Get the attribute of user's "memberOf"
 		List<String> membersOf = template.search(
-				query().base(ldapConfig.getUsersOU() + "," + ldapConfig.getLdapBase()).where(ldapConfig.getUserIDType()).is(username),
-				(AttributesMapper<ArrayList<?>>) attrs -> Collections.list(attrs.get("memberOf").getAll())
+				query()
+						.base(baseDN)
+						.searchScope(SearchScope.SUBTREE)
+						.where(ldapConfig.getUserIDType()).is(username),
+				(AttributesMapper<ArrayList<?>>) attrs -> Collections.list(attrs/*.get("memberOf")*/.getAll())
 		).get(0)
 				.stream()
 				.map(entry -> entry.toString())
