@@ -48,7 +48,7 @@ public class LDAPConfig {
 	 */
 	@Bean
 	@Conditional(LDAPCondition.class)
-	public LdapContextSource contextSource() {
+	public LdapContextSource ldapContextSource() {
 		LdapContextSource contextSource = new LdapContextSource();
 
 		contextSource.setUrl(ldapUrl);
@@ -67,7 +67,7 @@ public class LDAPConfig {
 	@Bean
 	@Conditional(LDAPCondition.class)
 	public LdapTemplate ldapTemplate() {
-		return new LdapTemplate(contextSource());
+		return new LdapTemplate(ldapContextSource());
 	}
 
 }

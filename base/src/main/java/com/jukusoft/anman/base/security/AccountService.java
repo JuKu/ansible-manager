@@ -75,8 +75,13 @@ public class AccountService implements IAccountService {
 		//remove authentication providers, which are not enabled
 		Set<String> enabledAuthProviders = Set.of(authProviderConfig.split(","));
 
+		//we need a new list to avoid ConcurrentModificationException while removing entries from the list
+		List<AuthProvider> authProviders = new ArrayList<>(authProviderList);
+
 		//remove disabled auth providers from list
-		for (AuthProvider authProvider : authProviderList) {
+		for (AuthProvider authProvider : authProviders) {
+			Objects.requireNonNull("name of authentication provider is null: " + authProvider.getClass().getCanonicalName(), authProvider.getName());
+
 			if (!enabledAuthProviders.contains(authProvider.getName())) {
 				authProviderList.remove(authProvider);
 			}

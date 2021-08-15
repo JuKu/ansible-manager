@@ -3,6 +3,7 @@ package com.jukusoft.anman.worker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.ldap.LdapAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -13,7 +14,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  *
  * @author Justin Kuenzel
  */
-@SpringBootApplication(scanBasePackages = {"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
+@SpringBootApplication(scanBasePackages = {"com.jukusoft.anman", "com.jukusoft.authentification.jwt"}, exclude = {
+        LdapAutoConfiguration.class
+})
 @PropertySource({"classpath:base.properties"})
 //@Configuration
 //@ComponentScan

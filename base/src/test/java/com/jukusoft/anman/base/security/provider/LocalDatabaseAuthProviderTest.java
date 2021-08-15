@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.ldap.LdapAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -141,12 +142,14 @@ class LocalDatabaseAuthProviderTest {
 		assertTrue(authProvider.hasRole("test", "test-role2"));
 	}
 
-	@SpringBootApplication(scanBasePackages = {"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
+	/*@SpringBootApplication(scanBasePackages = {"com.jukusoft.anman", "com.jukusoft.authentification.jwt"}, exclude = {
+			LdapAutoConfiguration.class
+	})
 	@PropertySource({"classpath:base.properties"})
 	@EntityScan({"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
 	@EnableJpaRepositories({"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
 	static class TestApplication {
 		//
-	}
+	}*/
 
 }

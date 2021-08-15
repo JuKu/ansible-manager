@@ -17,7 +17,7 @@ public class LDAPAuthProvider implements AuthProvider {
 
 	@Override
 	public String getName() {
-		return null;
+		return "ldap";
 	}
 
 	@Override

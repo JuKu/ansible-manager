@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.ldap.test.unboundid.TestContextSourceFactoryBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 /*
  * test class for ldap authentication provider.
@@ -14,7 +16,9 @@ import org.springframework.ldap.test.unboundid.TestContextSourceFactoryBean;
  * @author Justin Kuenzel
  */
 @SpringBootTest
-@PropertySource("classpath:test-ldap.properties")
+@ActiveProfiles({"test"})
+@PropertySource({"classpath:base.properties", "classpath:test-ldap.properties"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class LDAPAuthProviderTest {
 
 	@Autowired
@@ -26,10 +30,10 @@ public class LDAPAuthProviderTest {
 	}
 
 	@Bean
-	public TestContextSourceFactoryBean testContextSource() {
+	public TestContextSourceFactoryBean testLDAPContextSource() {
 		TestContextSourceFactoryBean contextSource
 				= new TestContextSourceFactoryBean();
-		contextSource.setContextSource(ldapConfig.contextSource());
+		contextSource.setContextSource(ldapConfig.ldapContextSource());
 
 		/*contextSource.setDefaultPartitionName(
 				env.getRequiredProperty("ldap.partition"));
