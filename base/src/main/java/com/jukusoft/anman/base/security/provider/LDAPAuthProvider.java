@@ -94,17 +94,17 @@ public class LDAPAuthProvider implements AuthProvider {
 			DirContext dirContext = ldapContextSource.getContext(generateUserCN(username), password);
 
 			//create ldap context source to filter groups
-			/*LdapContextSource source = ldapConfig.createContextSourceWithAuthentication(generateUserCN(username) + "," + ldapConfig.getLdapBase(), password);
+			LdapContextSource source = ldapConfig.createContextSourceWithAuthentication(generateUserCN(username) + "," + ldapConfig.getLdapBase(), password);
 			LdapTemplate template = new LdapTemplate(source);
 
 			//append a "ldap-" prefix to all groups from ldap
 			Set<String> roles = getUserGroupsFromLDAP(template, username).stream()
 					.map(group -> "ldap-" + group)
-					.collect(Collectors.toSet());*/
+					.collect(Collectors.toSet());
 
 			//login successfully
 			LOGGER.info("ldap login successful for user: {}", generateUserCN(username));
-			ExtendedAccountDTO accountDTO = new ExtendedAccountDTO(-1, username, username, username, new HashSet<>());
+			ExtendedAccountDTO accountDTO = new ExtendedAccountDTO(-1, username, username, username, roles);
 			return Optional.of(accountDTO);
 		} catch (CommunicationException e) {
 			LOGGER.warn("Cannot reach LDAP server: " + ldapContextSource.getUrls()[0], e);

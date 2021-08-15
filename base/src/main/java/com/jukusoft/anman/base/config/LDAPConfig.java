@@ -123,7 +123,7 @@ public class LDAPConfig {
 
 		contextSource.setUrl(ldapUrl);
 		contextSource.setBase(ldapBase);
-		contextSource.setUserDn(principal);
+		contextSource.setUserDn(principal + "," + ldapBase);
 		contextSource.setPassword(password);
 
 		//set default timeout to 5 seconds
@@ -133,7 +133,7 @@ public class LDAPConfig {
 		contextSource.setBaseEnvironmentProperties(baseEnv);
 
 		//set authentication source
-		contextSource.setAuthenticationSource(new AuthenticationSourceAdapter(principal, password));
+		contextSource.setAuthenticationSource(new AuthenticationSourceAdapter(principal + "," + ldapBase, password));
 
 		//validate config
 		contextSource.afterPropertiesSet();
