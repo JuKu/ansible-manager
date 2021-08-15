@@ -32,15 +32,6 @@ import java.util.Properties;
 @PropertySource({"classpath:db-test.properties"})
 public class TestH2Config {
 
-    static {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
     /**
      * the logger.
      */
