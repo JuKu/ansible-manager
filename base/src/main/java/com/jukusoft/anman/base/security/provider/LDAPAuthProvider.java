@@ -3,7 +3,6 @@ package com.jukusoft.anman.base.security.provider;
 import com.jukusoft.anman.base.config.LDAPConfig;
 import com.jukusoft.anman.base.security.AuthProvider;
 import com.jukusoft.anman.base.security.ExtendedAccountDTO;
-import com.jukusoft.authentification.jwt.account.AccountDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,7 @@ public class LDAPAuthProvider implements AuthProvider {
 
 	/**
 	 * the ldap template, created in LDAPConfig.
+	 *
 	 * @see LDAPConfig#ldapTemplate()
 	 */
 	private LdapTemplate ldapTemplate;

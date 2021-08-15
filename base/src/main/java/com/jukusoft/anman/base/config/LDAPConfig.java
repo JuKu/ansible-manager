@@ -14,6 +14,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -87,7 +88,7 @@ public class LDAPConfig {
 		contextSource.setPassword(ldapPassword);
 
 		//set default timeout to 5 seconds
-		Map<String, Object> baseEnv = new Hashtable<>();
+		Map<String, Object> baseEnv = new HashMap<>();
 		baseEnv.put("com.sun.jndi.ldap.connect.timeout", "5000");
 		baseEnv.put("com.sun.jndi.ldap.read.timeout", "5000");
 		contextSource.setBaseEnvironmentProperties(baseEnv);
@@ -145,9 +146,11 @@ public class LDAPConfig {
 			X509TrustManager tm = new X509TrustManager() {
 
 				public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+					//
 				}
 
 				public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+					//
 				}
 
 				public X509Certificate[] getAcceptedIssuers() {
