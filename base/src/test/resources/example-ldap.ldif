@@ -1,0 +1,69 @@
+# 	This file was generated on 2021-08-15 at 18:26:59
+# 	by Softerra LDAP Browser 4.5 [ http://www.ldapadministrator.com ]
+#   NOTE: extracted from FreeIPA
+dn: cn=users,cn=compat,dc=localdomain,dc=local
+objectClass: extensibleObject
+cn: users
+
+dn: uid=test,cn=users,cn=compat,dc=localdomain,dc=local
+objectClass: posixAccount
+objectClass: ipaOverrideTarget
+objectClass: top
+gecos: test user
+cn: test user
+uidNumber: 1328000008
+gidNumber: 1328000008
+loginShell: /bin/bash
+homeDirectory: /home/test
+ipaAnchorUUID: :IPA:localdomain.local:53324926-f830-11ea-8b83-0242ac150002
+uid: testuser
+
+dn: uid=test,cn=users,cn=accounts,dc=localdomain,dc=local
+givenName: test
+sn: tester
+uid: test
+cn: test tester
+displayName: Test Tester
+initials: TT
+gecos: Test Tester
+krbPrincipalName: test@LOCALDOMAIN.LOCAL
+objectClass: top
+objectClass: person
+objectClass: organizationalperson
+objectClass: inetorgperson
+objectClass: inetuser
+objectClass: posixaccount
+objectClass: krbprincipalaux
+objectClass: krbticketpolicyaux
+objectClass: ipaobject
+objectClass: ipasshuser
+objectClass: ipaSshGroupOfPubKeys
+objectClass: mepOriginEntry
+loginShell: /bin/bash
+homeDirectory: /home/test
+mail: test@localdomain.local
+krbCanonicalName: test@LOCALDOMAON.local
+ipaUniqueID: 53324926-f830-11ea-8b83-0242ac150002
+uidNumber: 1328000001
+gidNumber: 1328000001
+krbPasswordExpiration: 20760123125746Z
+krbLastPwdChange: 20210421125746Z
+memberOf: cn=ipausers,cn=groups,cn=accounts,dc=localdomain,dc=local
+
+dn: cn=ng,cn=compat,dc=localdomain,dc=local
+objectClass: extensibleObject
+cn: ng
+
+dn: cn=groups,cn=compat,dc=localdomain,dc=local
+objectClass: extensibleObject
+cn: groups
+
+dn: cn=anman-admin,cn=groups,cn=compat,dc=localdomain,dc=local
+objectClass: posixGroup
+objectClass: ipaOverrideTarget
+objectClass: ipaexternalgroup
+objectClass: top
+gidNumber: 1328000019
+memberUid: test
+ipaAnchorUUID: :IPA:localdomain.local:b6dfb18e-6022-11eb-bb22-0242ac160002
+cn: anman-admin
