@@ -16,6 +16,49 @@
             <artifactId>spring-jwt-authentification</artifactId>
             <version>1.0.2-SNAPSHOT</version>
         </dependency>
+
+        <!-- Embedded Apache DS LDAP server, see also: https://docs.spring.io/spring-ldap/docs/current/reference/#spring-ldap-testing-embedded-server -->
+        <!-- <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-all</artifactId>
+            <version>2.0.0.AM26</version>
+            <scope>test</scope>
+        </dependency> -->
+        <!-- <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-all</artifactId>
+            <version>1.5.7</version>
+        </dependency> -->
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-core</artifactId>
+            <version>1.5.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-core-entry</artifactId>
+            <version>1.5.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-protocol-ldap</artifactId>
+            <version>1.5.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-protocol-shared</artifactId>
+            <version>1.5.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-server-jndi</artifactId>
+            <version>1.5.7</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <properties>

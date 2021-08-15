@@ -38,6 +38,11 @@ hibernate:
   hbm2ddl.auto: update
   dialect: org.hibernate.dialect.H2Dialect
 
+# Authentication Configuration
+
+# disable validation of ssl certificates
+ldap.validate.ssl.certificates: false
+
 ######## H2 Database Debug Configuration ########
 
 # see also: https://howtodoinjava.com/spring-boot2/h2-database-example/

@@ -1,14 +1,26 @@
 # 	This file was generated on 2021-08-15 at 18:26:59
 # 	by Softerra LDAP Browser 4.5 [ http://www.ldapadministrator.com ]
 #   NOTE: extracted from FreeIPA
+#dn: dc=localdomain,dc=local
+#objectClass: top
+#objectClass: domain
+
+dn: dc=localdomain,dc=local
+objectclass: top
+objectclass: domain
+objectclass: extensibleObject
+
 dn: cn=users,cn=compat,dc=localdomain,dc=local
 objectClass: extensibleObject
 cn: users
 
-dn: uid=test,cn=users,cn=compat,dc=localdomain,dc=local
+dn: uid=testuser,cn=users,cn=compat,dc=localdomain,dc=local
 objectClass: posixAccount
 objectClass: ipaOverrideTarget
 objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
 gecos: test user
 cn: test user
 uidNumber: 1328000008
@@ -17,8 +29,9 @@ loginShell: /bin/bash
 homeDirectory: /home/test
 ipaAnchorUUID: :IPA:localdomain.local:53324926-f830-11ea-8b83-0242ac150002
 uid: testuser
+userPassword: test1234
 
-dn: uid=test,cn=users,cn=accounts,dc=localdomain,dc=local
+dn: uid=testuser,cn=users,cn=accounts,dc=localdomain,dc=local
 givenName: test
 sn: tester
 uid: test
@@ -49,6 +62,7 @@ gidNumber: 1328000001
 krbPasswordExpiration: 20760123125746Z
 krbLastPwdChange: 20210421125746Z
 memberOf: cn=ipausers,cn=groups,cn=accounts,dc=localdomain,dc=local
+userPassword: test1234
 
 dn: cn=ng,cn=compat,dc=localdomain,dc=local
 objectClass: extensibleObject
