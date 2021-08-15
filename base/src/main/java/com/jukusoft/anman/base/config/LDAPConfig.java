@@ -122,7 +122,7 @@ public class LDAPConfig {
 		LdapContextSource contextSource = new LdapContextSource();
 
 		contextSource.setUrl(ldapUrl);
-		contextSource.setBase(ldapBase);
+		//contextSource.setBase(ldapBase);
 		contextSource.setUserDn(principal + "," + ldapBase);
 		contextSource.setPassword(password);
 

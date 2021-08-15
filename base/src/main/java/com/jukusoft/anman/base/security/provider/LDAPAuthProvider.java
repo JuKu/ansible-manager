@@ -94,7 +94,11 @@ public class LDAPAuthProvider implements AuthProvider {
 			DirContext dirContext = ldapContextSource.getContext(generateUserCN(username), password);
 
 			//create ldap context source to filter groups
-			LdapContextSource source = ldapConfig.createContextSourceWithAuthentication(generateUserCN(username) + "," + ldapConfig.getLdapBase(), password);
+			String userCN = generateUserCN(username);
+
+			//remove base dn (+ comma) from the string
+			userCN = userCN.substring(0, userCN.length() - (ldapConfig.getLdapBase().length() + 1));
+			LdapContextSource source = ldapConfig.createContextSourceWithAuthentication(userCN, password);
 			LdapTemplate template = new LdapTemplate(source);
 
 			//append a "ldap-" prefix to all groups from ldap
@@ -142,7 +146,7 @@ public class LDAPAuthProvider implements AuthProvider {
 
 		//Get the attribute of user's "memberOf"
 		List<String> membersOf = template.search(
-				query().where(ldapConfig.getUserIDType()).is(username),
+				query().base(ldapConfig.getUsersOU() + "," + ldapConfig.getLdapBase()).where(ldapConfig.getUserIDType()).is(username),
 				(AttributesMapper<ArrayList<?>>) attrs -> Collections.list(attrs.get("memberOf").getAll())
 		).get(0)
 				.stream()
