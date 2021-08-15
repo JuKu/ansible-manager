@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -27,7 +29,17 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @Profile("test")
+@PropertySource({"classpath:db-test.properties"})
 public class TestH2Config {
+
+    static {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     /**
      * the logger.
@@ -77,7 +89,7 @@ public class TestH2Config {
         dataSource.setDriverClassName("org.h2.Driver");
         dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
         dataSource.setUsername("sa");
-        dataSource.setPassword("sa");
+        dataSource.setPassword("");
         return dataSource;
     }
 
@@ -112,6 +124,9 @@ public class TestH2Config {
      * @return additional properties
      */
     Properties additionalProperties() {
+        Objects.requireNonNull(hibernateHbm2ddlAuto);
+        Objects.requireNonNull(hibernateDialect);
+
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
         properties.setProperty("hibernate.dialect", hibernateDialect);
