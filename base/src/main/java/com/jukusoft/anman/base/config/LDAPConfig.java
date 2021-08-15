@@ -15,7 +15,6 @@ import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /*
@@ -33,7 +32,7 @@ public class LDAPConfig {
 
 	/**
 	 * the ldap url, e.q. "ldap://localhost:389/dc=localdomain,dc=local".
-	 *
+	 * <p>
 	 * See also: https://stackoverflow.com/questions/52153346/how-to-configure-spring-to-use-external-ldap-server
 	 */
 	@Value("${ldap.url}")
@@ -137,7 +136,7 @@ public class LDAPConfig {
 
 	/**
 	 * disable SSL certificate validation.
-	 *
+	 * <p>
 	 * see also: https://stackoverflow.com/questions/17143858/disabling-ssl-certificate-validation-for-active-directory-server-using-spring-ld
 	 */
 	protected static void trustSelfSignedSSL() {
