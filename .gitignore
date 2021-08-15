@@ -430,6 +430,8 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+local-properties.properties
+
 # Eclipse Gradle plugin generated files
 # Eclipse Core
 # JDT-specific (Eclipse Java Development Tools)
