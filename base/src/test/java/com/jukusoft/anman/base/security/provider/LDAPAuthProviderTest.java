@@ -83,9 +83,9 @@ class LDAPAuthProviderTest {
 	/**
 	 * this test checks, if the user login works, this means that the login only works, if the credentials are correct.
 	 */
-	//@Test
+	@Test
 	void testLDAPAuth() {
-		LdapTestUtils.startEmbeddedServer(port, "dc=localdomain,dc=local", "example");
+		//LdapTestUtils.startEmbeddedServer(port, "dc=localdomain,dc=local", "example");
 
 		if (!new File("../local-properties.properties").exists()) {
 			System.err.println("no local-properties.properties found, skip ldap tests");
@@ -113,7 +113,7 @@ class LDAPAuthProviderTest {
 		assertTrue(userString.contains("dc="));
 	}
 
-	@Bean
+	//@Bean
 	public TestContextSourceFactoryBean testLDAPContextSource() throws Exception {
 		TestContextSourceFactoryBean contextSource
 				= new TestContextSourceFactoryBean();
@@ -131,7 +131,7 @@ class LDAPAuthProviderTest {
 		return contextSource;
 	}
 
-	@Bean
+	//@Bean
 	public LdifPopulator ldifPopulator(@Autowired EmbeddedLdapServer embeddedLdapServer) throws Exception {
 		LdifPopulator ldifPopulator = new LdifPopulator();
 		ldifPopulator.setResource(resourceLoader.getResource("example-ldap.ldif"));

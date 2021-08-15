@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.ldap.core.AuthenticationSource;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
@@ -62,6 +63,15 @@ public class LDAPConfig {
 	@Value("${ldap.user.object}")
 	private String userOUType;
 
+	@Value("${ldap.user.search.id.type}")
+	private String userIDType;
+
+	@Value("${ldap.group.prefix}")
+	private String groupPrefix;
+
+	@Value("${ldap.group.suffix}")
+	private String groupSuffix;
+
 	@Value("${ldap.validate.ssl.certificates}")
 	private boolean validateSSLCertificates;
 
@@ -79,18 +89,7 @@ public class LDAPConfig {
 		}
 
 		LOGGER.info("ldap is enabled, create ldap context source, ldap url: {}", ldapUrl);
-		LdapContextSource contextSource = new LdapContextSource();
-
-		contextSource.setUrl(ldapUrl);
-		contextSource.setBase(ldapBase);
-		contextSource.setUserDn(ldapPricipal);
-		contextSource.setPassword(ldapPassword);
-
-		//set default timeout to 5 seconds
-		Map<String, Object> baseEnv = new HashMap<>();
-		baseEnv.put("com.sun.jndi.ldap.connect.timeout", "5000");
-		baseEnv.put("com.sun.jndi.ldap.read.timeout", "5000");
-		contextSource.setBaseEnvironmentProperties(baseEnv);
+		LdapContextSource contextSource = createContextSourceWithAuthentication(ldapPricipal, ldapPassword);
 
 		return contextSource;
 	}
@@ -109,6 +108,37 @@ public class LDAPConfig {
 		ldapTemplate.setDefaultTimeLimit(5000);
 
 		return ldapTemplate;
+	}
+
+	/**
+	 * create a new context source with credentials (this does not use the default credentials).
+	 *
+	 * @param principal username cn
+	 * @param password password
+	 *
+	 * @return ldap context source
+	 */
+	public LdapContextSource createContextSourceWithAuthentication(final String principal, final String password) {
+		LdapContextSource contextSource = new LdapContextSource();
+
+		contextSource.setUrl(ldapUrl);
+		contextSource.setBase(ldapBase);
+		contextSource.setUserDn(principal);
+		contextSource.setPassword(password);
+
+		//set default timeout to 5 seconds
+		Map<String, Object> baseEnv = new HashMap<>();
+		baseEnv.put("com.sun.jndi.ldap.connect.timeout", "5000");
+		baseEnv.put("com.sun.jndi.ldap.read.timeout", "5000");
+		contextSource.setBaseEnvironmentProperties(baseEnv);
+
+		//set authentication source
+		contextSource.setAuthenticationSource(new AuthenticationSourceAdapter(principal, password));
+
+		//validate config
+		contextSource.afterPropertiesSet();
+
+		return contextSource;
 	}
 
 	/**
@@ -132,6 +162,33 @@ public class LDAPConfig {
 	 */
 	public String getUserOUType() {
 		return userOUType;
+	}
+
+	/**
+	 * returns the id attribute to identify the user in searches.
+	 * E.q. "sAMAccountName" or "uid"
+	 * @return
+	 */
+	public String getUserIDType() {
+		return userIDType;
+	}
+
+	/**
+	 * get the group prefix, e.q. "cn".
+	 *
+	 * @return group prefix
+	 */
+	public String getGroupPrefix() {
+		return groupPrefix;
+	}
+
+	/**
+	 * get the group suffix, e.q. cn=groups,cn=accounts,dc=localdomain,dc=local .
+	 *
+	 * @return group suffix
+	 */
+	public String getGroupSuffix() {
+		return groupSuffix + "," + getLdapBase();
 	}
 
 	/**

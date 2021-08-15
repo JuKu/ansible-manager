@@ -8,15 +8,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.AuthenticationException;
 import org.springframework.ldap.CommunicationException;
+import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NamingEnumeration;
 import javax.naming.directory.DirContext;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 /*
  * a ldap authentication provider to authenticate against a LDAP server.
@@ -86,7 +90,17 @@ public class LDAPAuthProvider implements AuthProvider {
 		ldapTemplate.setDefaultTimeLimit(5000);
 
 		try {
+			//find user - if the credentials are wrong, this method throws an exception
 			DirContext dirContext = ldapContextSource.getContext(generateUserCN(username), password);
+
+			//create ldap context source to filter groups
+			/*LdapContextSource source = ldapConfig.createContextSourceWithAuthentication(generateUserCN(username) + "," + ldapConfig.getLdapBase(), password);
+			LdapTemplate template = new LdapTemplate(source);
+
+			//append a "ldap-" prefix to all groups from ldap
+			Set<String> roles = getUserGroupsFromLDAP(template, username).stream()
+					.map(group -> "ldap-" + group)
+					.collect(Collectors.toSet());*/
 
 			//login successfully
 			LOGGER.info("ldap login successful for user: {}", generateUserCN(username));
@@ -97,14 +111,55 @@ public class LDAPAuthProvider implements AuthProvider {
 			throw new IllegalStateException("ldap server is not reachable: " + ldapContextSource.getUrls()[0]);
 		} catch (AuthenticationException e) {
 			//credentials are wrong
-			LOGGER.info("ldap credentials are wrong for user: {}", generateUserCN(username));
+			LOGGER.info("ldap credentials are wrong for user: {}", generateUserCN(username), e);
 			return Optional.empty();
 		}
 	}
 
+	/**
+	 * generate a full user cn from username.
+	 *
+	 * @param username username
+	 *
+	 * @return full user cn, e.q. uid=testuser,cn=users,cn=accounts,dc=localdomain,dc=local
+	 */
 	protected String generateUserCN(String username) {
 		//expected form: uid=<User>,cn=users,cn=accounts,dc=localdomain,dc=local
 		return userOUType + "=" + username + "," + usersOU + "," + ldapConfig.getLdapBase();
+	}
+
+	/**
+	 * get all groups of user from LDAP.
+	 *
+	 * @param template ldap template
+	 * @param username the username
+	 *
+	 * @return list with all groups of user from ldap
+	 */
+	protected List<String> getUserGroupsFromLDAP(LdapTemplate template, String username) {
+		Objects.requireNonNull(template);
+		Objects.requireNonNull(username);
+
+		//Get the attribute of user's "memberOf"
+		List<String> membersOf = template.search(
+				query().where(ldapConfig.getUserIDType()).is(username),
+				(AttributesMapper<ArrayList<?>>) attrs -> Collections.list(attrs.get("memberOf").getAll())
+		).get(0)
+				.stream()
+				.map(entry -> entry.toString())
+				.toList();
+
+		String groupPrefix = "cn=";
+		String groupSuffix = "," + ldapConfig.getGroupSuffix();
+
+		//check, if groups ends with expected suffix
+		List<String> groups = membersOf.stream()
+				.filter(entry -> entry.endsWith(groupSuffix))
+				.map(entry -> entry.substring(groupPrefix.length()))
+				.map(entry -> entry.substring(0, entry.length() - groupSuffix.length()))//remove suffix
+				.toList();
+
+		return groups;
 	}
 
 	@Override
