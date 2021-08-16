@@ -430,7 +430,8 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
-local-properties1.properties
+local-properties.properties
+application.yml
 
 # Eclipse Gradle plugin generated files
 # Eclipse Core
