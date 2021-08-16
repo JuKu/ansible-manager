@@ -6,6 +6,7 @@ import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.security.AccountService;
 import com.jukusoft.anman.base.security.AuthProvider;
 import com.jukusoft.anman.base.security.ExtendedAccountDTO;
+import com.jukusoft.anman.base.utils.PasswordService;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,15 +49,23 @@ class LocalDatabaseAuthProviderTest {
 	 */
 	private static LocalDatabaseAuthProvider authProvider;
 
+	/**
+	 * the password service.
+	 */
+	private static PasswordService passwordService;
+
 	@BeforeEach
 	public void before() {
 		//create authentication provider
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		authProvider = new LocalDatabaseAuthProvider(userDAO, new BCryptPasswordEncoder());
+		passwordService = new PasswordService(passwordEncoder);
+		String salt = passwordService.generateSalt();
+		authProvider = new LocalDatabaseAuthProvider(userDAO, passwordService.getPasswordEncoder());
 
 		//create some sample user entries
 		UserEntity user = new UserEntity("test", "prename", "lastname");
-		user.setPassword(passwordEncoder.encode("test1234"));
+		user.setPassword(passwordService.encodePassword("test1234", salt));
+		user.setSalt(salt);
 
 		RoleEntity role = new RoleEntity("test-role1");
 		RoleEntity role1 = new RoleEntity("test-role2");
