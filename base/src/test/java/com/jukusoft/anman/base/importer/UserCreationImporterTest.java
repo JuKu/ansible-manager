@@ -5,6 +5,9 @@ import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.security.provider.LocalDatabaseAuthProvider;
 import com.jukusoft.anman.base.utils.PasswordService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 
 /*
@@ -55,6 +60,21 @@ class UserCreationImporterTest {
 		assertFalse(authProvider.login("admin1", "admin").isPresent());
 		assertFalse(authProvider.login("admin", "admin1").isPresent());
 		assertTrue(authProvider.login("admin", "admin").isPresent());
+
+		//execute importer again
+		importer.afterPropertiesSet();
+
+		//there should not be an additional user
+		assertEquals(1, userDAO.count());
+
+		//check, if an exception is thrown, if the user cannot be stored in database
+		UserDAO userDAO1 = Mockito.mock(UserDAO.class);
+
+		//return same UserEntity object without store them in database, so id will not be changed
+		when(userDAO1.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		UserCreationImporter importer1 = new UserCreationImporter(userDAO1, passwordService);
+		assertThrows(IllegalStateException.class, () -> importer1.afterPropertiesSet());
 	}
 
 }
