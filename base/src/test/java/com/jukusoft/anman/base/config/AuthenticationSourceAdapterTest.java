@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Justin Kuenzel
  */
-public class AuthenticationSourceAdapterTest {
+class AuthenticationSourceAdapterTest {
 
 	/**
 	 * check the getter methods that the return the same string as in parameters.
