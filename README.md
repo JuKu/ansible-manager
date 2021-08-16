@@ -55,7 +55,7 @@ You have to start 2 docker containers with the same database:
 
   - initialize project &#9745;
   - authentication
-  - LDAP integration (test with FreeIPA)
+  - LDAP integration (test with FreeIPA) &#9745;
   - permission system
   - inventory management
   - generation of inventory files
