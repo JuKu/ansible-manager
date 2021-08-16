@@ -104,6 +104,12 @@ public class LDAPAuthProvider implements AuthProvider {
 					.map(group -> "ldap-" + group)
 					.collect(Collectors.toSet());
 
+			//check, if the user has the required groups / permissions
+			if (!checkForRequiredPermissions(roles, ldapConfig.getRequiredLoginGroups())) {
+				LOGGER.info("user credentials are correct, but user does not have the required LDAP groups / permissions to login");
+				return Optional.empty();
+			}
+
 			//login successfully
 			LOGGER.info("ldap login successful for user: {}", generateUserCN(username));
 			ExtendedAccountDTO accountDTO = new ExtendedAccountDTO(-1, username, username, username, roles);
@@ -116,6 +122,29 @@ public class LDAPAuthProvider implements AuthProvider {
 			LOGGER.info("ldap credentials are wrong for user: {}", generateUserCN(username));
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * this method checks, if the user has the required groups or permissions to login.
+	 *
+	 * @param roles               roles of user
+	 * @param requiredGroups required permissions as comma-seperated list
+	 *
+	 * @return true, if the user has the permission to login
+	 */
+	protected boolean checkForRequiredPermissions(Set<String> roles, String requiredGroups) {
+		if (requiredGroups.isEmpty()) {
+			return true;
+		}
+
+		for (String requiredGroup : requiredGroups.split(",")) {
+			if (roles.contains(requiredGroup)) {
+				//the user has the required group to login
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

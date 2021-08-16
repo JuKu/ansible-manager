@@ -71,6 +71,9 @@ public class LDAPConfig {
 	@Value("${ldap.group.suffix}")
 	private String groupSuffix;
 
+	@Value("${auth.providers.ldap.required.groups}")
+	private String requiredLoginGroups;
+
 	@Value("${ldap.validate.ssl.certificates}")
 	private boolean validateSSLCertificates;
 
@@ -199,6 +202,16 @@ public class LDAPConfig {
 	 */
 	public String getGroupSuffix() {
 		return groupSuffix + "," + getLdapBase();
+	}
+
+	/**
+	 * get a comma-seperated list with all required permissions which are required for users to login.
+	 * If empty, no permission is required for login.
+	 *
+	 * @return comma-seperated list with all required permissions to login
+	 */
+	public String getRequiredLoginGroups() {
+		return requiredLoginGroups;
 	}
 
 	/**
