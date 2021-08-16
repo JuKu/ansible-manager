@@ -190,11 +190,11 @@ public class LDAPAuthProvider implements AuthProvider {
 
 	@Override
 	public Collection<String> listRoles(String username) {
-		return null;
+		return getUserGroupsFromLDAP(ldapTemplate, username);
 	}
 
 	@Override
 	public boolean hasRole(String username, String role) {
-		return false;
+		return listRoles(username).contains(role);
 	}
 }
