@@ -431,6 +431,7 @@ gradle-app.setting
 **/build/
 
 local-properties.properties
+local-properties1.properties
 application.yml
 
 # Eclipse Gradle plugin generated files
