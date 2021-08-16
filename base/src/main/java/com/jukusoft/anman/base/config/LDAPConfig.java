@@ -141,6 +141,14 @@ public class LDAPConfig {
 		return contextSource;
 	}
 
+	public String getLdapUrl() {
+		return ldapUrl;
+	}
+
+	public void setLdapUrl(String ldapUrl) {
+		this.ldapUrl = ldapUrl;
+	}
+
 	/**
 	 * get ldap base, e.q. "dc=localdomain,dc=local"
 	 *
@@ -148,6 +156,10 @@ public class LDAPConfig {
 	 */
 	public String getLdapBase() {
 		return ldapBase;
+	}
+
+	public void setLdapBase(String ldapBase) {
+		this.ldapBase = ldapBase;
 	}
 
 	@Bean(name = "ldap_users_ou")

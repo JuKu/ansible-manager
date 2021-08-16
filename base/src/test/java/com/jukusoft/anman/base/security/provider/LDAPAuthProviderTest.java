@@ -1,6 +1,8 @@
 package com.jukusoft.anman.base.security.provider;
 
 import com.jukusoft.anman.base.config.LDAPConfig;
+import com.jukusoft.anman.base.security.ExtendedAccountDTO;
+import com.jukusoft.authentification.jwt.account.AccountDTO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,7 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.EncodedResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.test.EmbeddedLdapServer;
@@ -18,8 +24,12 @@ import org.springframework.ldap.test.unboundid.LdifPopulator;
 import org.springframework.ldap.test.unboundid.TestContextSourceFactoryBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.TestPropertySources;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,9 +42,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles({"test"})
 @PropertySource(value = {"classpath:base.properties", "classpath:test-ldap.properties"}, ignoreResourceNotFound = false)
-@PropertySources({
+/*@PropertySources({
 		@PropertySource(value = {"file:../local-properties.properties"}, ignoreResourceNotFound = true)
 })
+@TestPropertySources({
+		@TestPropertySource(value = {"classpath:test-ldap.properties", "file:../local-properties.properties"})
+})*/
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class LDAPAuthProviderTest {
 
@@ -84,12 +97,18 @@ class LDAPAuthProviderTest {
 	 * this test checks, if the user login works, this means that the login only works, if the credentials are correct.
 	 */
 	@Test
-	void testLDAPAuth() {
+	void testLDAPAuth() throws IOException {
 		//LdapTestUtils.startEmbeddedServer(port, "dc=localdomain,dc=local", "example");
 
 		if (!new File("../local-properties.properties").exists()) {
 			System.err.println("no local-properties.properties found, skip ldap tests");
 			return;
+		} else {
+			Resource resource = new FileSystemResource("../local-properties.properties");
+			Properties props = PropertiesLoaderUtils.loadProperties(resource);
+
+			ldapConfig.setLdapUrl(props.getProperty("ldap.url"));
+			ldapConfig.setLdapUrl(props.getProperty("ldap.base"));
 		}
 
 		//check, if ldap config was created
@@ -102,6 +121,13 @@ class LDAPAuthProviderTest {
 		//check login
 		assertFalse(authProvider.login("test", "test5678").isPresent());
 		assertTrue(authProvider.login("testuser", "test1234").isPresent());
+
+		//check roles
+		ExtendedAccountDTO accountDTO = authProvider.login("testuser", "test1234").get();
+		assertFalse(accountDTO.getRoles().isEmpty());
+		assertEquals(2, accountDTO.getRoles().size());
+		assertTrue(accountDTO.getRoles().contains("ldap-ipausers"));
+		assertTrue(accountDTO.getRoles().contains("ldap-server-admin"));
 	}
 
 	@Test

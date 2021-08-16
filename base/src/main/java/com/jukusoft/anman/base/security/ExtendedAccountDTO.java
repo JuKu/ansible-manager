@@ -62,7 +62,7 @@ public class ExtendedAccountDTO extends AccountDTO {
 	 *
 	 * @return permissions of user
 	 */
-	public Set<String> getPermissions() {
+	public Set<String> getRoles() {
 		return roles;
 	}
 

@@ -14,10 +14,9 @@ import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.query.SearchScope;
 import org.springframework.stereotype.Service;
 
-import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -148,29 +147,13 @@ public class LDAPAuthProvider implements AuthProvider {
 		//compute baseDN for users
 		String baseDN = ldapConfig.getUsersOU() + "," + ldapConfig.getLdapBase();
 
-		//Get the attribute of user's "memberOf"
-		List<String> membersOf = template.search(
-				query()
-						.base(baseDN)
-						.searchScope(SearchScope.SUBTREE)
-						.where(ldapConfig.getUserIDType()).is(username),
-				(AttributesMapper<ArrayList<?>>) attrs -> Collections.list(attrs/*.get("memberOf")*/.getAll())
-		).get(0)
-				.stream()
-				.map(entry -> entry.toString())
-				.toList();
+		List<String> membersOf = template.search(query()
+				//.base(ldapConfig.getGroupSuffix()/* + "," + ldapConfig.getLdapBase()*/)
+				.searchScope(SearchScope.SUBTREE)
+				.where("member").is(generateUserCN(username)),
+				(AttributesMapper<String>) attributes -> (String) attributes.get("cn").get());
 
-		String groupPrefix = "cn=";
-		String groupSuffix = "," + ldapConfig.getGroupSuffix();
-
-		//check, if groups ends with expected suffix
-		List<String> groups = membersOf.stream()
-				.filter(entry -> entry.endsWith(groupSuffix))
-				.map(entry -> entry.substring(groupPrefix.length()))
-				.map(entry -> entry.substring(0, entry.length() - groupSuffix.length()))//remove suffix
-				.toList();
-
-		return groups;
+		return membersOf;
 	}
 
 	@Override
