@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.ldap.core.AuthenticationSource;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
@@ -89,9 +88,7 @@ public class LDAPConfig {
 		}
 
 		LOGGER.info("ldap is enabled, create ldap context source, ldap url: {}", ldapUrl);
-		LdapContextSource contextSource = createContextSourceWithAuthentication(ldapPricipal, ldapPassword);
-
-		return contextSource;
+		return createContextSourceWithAuthentication(ldapPricipal, ldapPassword);
 	}
 
 	/**
@@ -114,7 +111,7 @@ public class LDAPConfig {
 	 * create a new context source with credentials (this does not use the default credentials).
 	 *
 	 * @param principal username cn
-	 * @param password password
+	 * @param password  password
 	 *
 	 * @return ldap context source
 	 */
@@ -179,6 +176,7 @@ public class LDAPConfig {
 	/**
 	 * returns the id attribute to identify the user in searches.
 	 * E.q. "sAMAccountName" or "uid"
+	 *
 	 * @return
 	 */
 	public String getUserIDType() {

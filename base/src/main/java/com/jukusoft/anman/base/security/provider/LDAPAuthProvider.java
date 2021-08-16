@@ -14,8 +14,6 @@ import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.query.SearchScope;
 import org.springframework.stereotype.Service;
 
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -144,16 +142,11 @@ public class LDAPAuthProvider implements AuthProvider {
 		Objects.requireNonNull(template);
 		Objects.requireNonNull(username);
 
-		//compute baseDN for users
-		String baseDN = ldapConfig.getUsersOU() + "," + ldapConfig.getLdapBase();
-
-		List<String> membersOf = template.search(query()
-				//.base(ldapConfig.getGroupSuffix()/* + "," + ldapConfig.getLdapBase()*/)
-				.searchScope(SearchScope.SUBTREE)
-				.where("member").is(generateUserCN(username)),
+		return template.search(query()
+						//.base(ldapConfig.getGroupSuffix()/* + "," + ldapConfig.getLdapBase()*/)
+						.searchScope(SearchScope.SUBTREE)
+						.where("member").is(generateUserCN(username)),
 				(AttributesMapper<String>) attributes -> (String) attributes.get("cn").get());
-
-		return membersOf;
 	}
 
 	@Override
