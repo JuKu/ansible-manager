@@ -102,9 +102,10 @@ class LDAPAuthProviderTest {
 
 			ldapConfig.setLdapUrl(props.getProperty("ldap.url"));
 			ldapConfig.setLdapBase(props.getProperty("ldap.base"));
-			this.ldapContextSource = ldapConfig.ldapContextSource();
-			this.ldapTemplate = ldapConfig.ldapTemplate();
 		}
+
+		this.ldapContextSource = ldapConfig.ldapContextSource();
+		this.ldapTemplate = ldapConfig.ldapTemplate();
 	}
 
 	@AfterEach
