@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.AuthenticationException;
 import org.springframework.ldap.CommunicationException;
+import org.springframework.ldap.OperationNotSupportedException;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -105,8 +106,8 @@ public class LDAPAuthProvider implements AuthProvider {
 					.collect(Collectors.toSet());
 
 			//check, if the user has the required groups / permissions
-			if (!checkForRequiredPermissions(roles, ldapConfig.getRequiredLoginGroups())) {
-				LOGGER.info("user credentials are correct, but user does not have the required LDAP groups / permissions to login");
+			if (!checkForRequiredPermissions(roles, ldapConfig.getRequiredLoginGroups(), "ldap-")) {
+				LOGGER.info("user credentials are correct, but user does not have the required LDAP groups / permissions to login, user: {}, required ldap groups: {}", username, ldapConfig.getRequiredLoginGroups());
 				return Optional.empty();
 			}
 
@@ -121,6 +122,14 @@ public class LDAPAuthProvider implements AuthProvider {
 			//credentials are wrong
 			LOGGER.info("ldap credentials are wrong for user: {}", generateUserCN(username));
 			return Optional.empty();
+		} catch (OperationNotSupportedException e) {
+			if (e.getLocalizedMessage().contains("Account inactivated")) {
+				LOGGER.info("Cannot login user '{}', because ldap account is not activated", username, e);
+			} else {
+				LOGGER.warn("OperationNotSupportedException while try to login ldap user '{}': ", username, e);
+			}
+
+			return Optional.empty();
 		}
 	}
 
@@ -129,16 +138,17 @@ public class LDAPAuthProvider implements AuthProvider {
 	 *
 	 * @param roles               roles of user
 	 * @param requiredGroups required permissions as comma-seperated list
+	 * @param groupPrefix group prefix, if required (default: "ldap-")
 	 *
 	 * @return true, if the user has the permission to login
 	 */
-	protected boolean checkForRequiredPermissions(Set<String> roles, String requiredGroups) {
+	protected boolean checkForRequiredPermissions(Set<String> roles, String requiredGroups, String groupPrefix) {
 		if (requiredGroups.isEmpty()) {
 			return true;
 		}
 
 		for (String requiredGroup : requiredGroups.split(",")) {
-			if (roles.contains(requiredGroup)) {
+			if (roles.contains(groupPrefix + requiredGroup)) {
 				//the user has the required group to login
 				return true;
 			}

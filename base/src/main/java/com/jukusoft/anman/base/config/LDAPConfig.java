@@ -6,16 +6,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
+import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /*
  * ldap configuration.
@@ -90,7 +96,22 @@ public class LDAPConfig {
 			LDAPConfig.trustSelfSignedSSL();
 		}
 
-		LOGGER.info("ldap is enabled, create ldap context source, ldap url: {}", ldapUrl);
+		//override ldap url and base, if local properties file exists (important for junit tests)
+		if (new File("../local-properties.properties").exists()) {
+			LOGGER.info("found local-properties.properties, override ldap.url and ldap.base");
+			Resource resource = new FileSystemResource("../local-properties.properties");
+			Properties props = null;
+			try {
+				props = PropertiesLoaderUtils.loadProperties(resource);
+
+				this.setLdapUrl(props.getProperty("ldap.url"));
+				this.setLdapBase(props.getProperty("ldap.base"));
+			} catch (IOException e) {
+				LOGGER.warn("Cannot load local-properties.properties: ", e);
+			}
+		}
+
+		LOGGER.info("ldap is enabled, create ldap context source, ldap url: {}", this.ldapUrl);
 		return createContextSourceWithAuthentication(ldapPricipal, ldapPassword);
 	}
 

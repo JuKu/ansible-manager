@@ -3,9 +3,8 @@ package com.jukusoft.anman.base.security.provider;
 import com.jukusoft.anman.base.config.LDAPConfig;
 import com.jukusoft.anman.base.security.ExtendedAccountDTO;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
@@ -29,8 +28,10 @@ import org.springframework.test.context.TestPropertySources;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,10 +55,8 @@ class LDAPAuthProviderTest {
 	@Autowired
 	private LDAPConfig ldapConfig;
 
-	@Autowired
 	private LdapContextSource ldapContextSource;
 
-	@Autowired
 	private LdapTemplate ldapTemplate;
 
 	/**
@@ -93,6 +92,26 @@ class LDAPAuthProviderTest {
 		LdapTestUtils.shutdownEmbeddedServer();
 	}
 
+	@BeforeEach
+	public void beforeTest() throws IOException {
+		if (!new File("../local-properties.properties").exists()) {
+			System.err.println("no local-properties.properties found");
+		} else {
+			Resource resource = new FileSystemResource("../local-properties.properties");
+			Properties props = PropertiesLoaderUtils.loadProperties(resource);
+
+			ldapConfig.setLdapUrl(props.getProperty("ldap.url"));
+			ldapConfig.setLdapBase(props.getProperty("ldap.base"));
+			this.ldapContextSource = ldapConfig.ldapContextSource();
+			this.ldapTemplate = ldapConfig.ldapTemplate();
+		}
+	}
+
+	@AfterEach
+	public void afterEach() {
+		//
+	}
+
 	/**
 	 * this test checks, if the user login works, this means that the login only works, if the credentials are correct.
 	 */
@@ -103,12 +122,6 @@ class LDAPAuthProviderTest {
 		if (!new File("../local-properties.properties").exists()) {
 			System.err.println("no local-properties.properties found, skip ldap tests");
 			return;
-		} else {
-			Resource resource = new FileSystemResource("../local-properties.properties");
-			Properties props = PropertiesLoaderUtils.loadProperties(resource);
-
-			ldapConfig.setLdapUrl(props.getProperty("ldap.url"));
-			ldapConfig.setLdapUrl(props.getProperty("ldap.base"));
 		}
 
 		//check, if ldap config was created
@@ -127,7 +140,18 @@ class LDAPAuthProviderTest {
 		assertFalse(accountDTO.getRoles().isEmpty());
 		assertEquals(2, accountDTO.getRoles().size());
 		assertTrue(accountDTO.getRoles().contains("ldap-ipausers"));
-		assertTrue(accountDTO.getRoles().contains("ldap-server-admin"));
+		assertTrue(accountDTO.getRoles().contains("ldap-anman-access"));
+	}
+
+	@Test
+	void testCheckForRequiredPermissions() {
+		LDAPAuthProvider authProvider = new LDAPAuthProvider(Mockito.mock(LdapContextSource.class), Mockito.mock(LdapTemplate.class), ldapConfig);
+		Set<String> userGroups = new HashSet<>();
+		userGroups.add("test-group");
+
+		assertFalse(authProvider.checkForRequiredPermissions(userGroups, "test", ""));
+		assertTrue(authProvider.checkForRequiredPermissions(userGroups, "test-group", ""));
+		assertTrue(authProvider.checkForRequiredPermissions(userGroups, "test,test-group", ""));
 	}
 
 	@Test
