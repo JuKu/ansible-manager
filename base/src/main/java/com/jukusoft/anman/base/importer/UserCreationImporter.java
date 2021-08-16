@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -33,6 +34,20 @@ public class UserCreationImporter implements InitializingBean {
 	 * the password service for password encoding and salt generation.
 	 */
 	private PasswordService passwordService;
+
+	/**
+	 * the admin username.
+	 * Default: "admin".
+	 */
+	@Value("${admin.user}")
+	private String adminUser = "admin";
+
+	/**
+	 * the admin password.
+	 * Default: "admin".
+	 */
+	@Value("${admin.password}")
+	private String adminPassword = "admin";
 
 	/**
 	 * constructor.

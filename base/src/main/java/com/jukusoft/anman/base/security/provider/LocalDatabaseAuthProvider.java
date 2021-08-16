@@ -49,7 +49,7 @@ public class LocalDatabaseAuthProvider implements AuthProvider {
 	@Override
 	public Optional<ExtendedAccountDTO> login(String username, String password) {
 		return userDAO.findOneByUsername(username)
-				.filter(account -> passwordEncoder.matches(password, account.getPassword()))
+				.filter(account -> passwordEncoder.matches(password + account.getSalt(), account.getPassword()))
 				.map(user -> new ExtendedAccountDTO(user.getId(), user.getUsername(), "n/a", "n/a", listRoles(username)));
 	}
 
