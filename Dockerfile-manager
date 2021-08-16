@@ -35,6 +35,10 @@ ENV SWAGGER_ENABLED true
 # logger configuration
 ENV LOGGING_PATH /logs/logging.log
 
+# user creation
+ENV ADMIN_USER admin
+ENV ADMIN_PASSWORD admin
+
 ENV JETTY_HOME=/usr/local/jetty
 ENV JETTY_BASE=/var/lib/jetty
 ENV TMPDIR=/tmp/jetty
@@ -72,4 +76,6 @@ VOLUME ["/logs"]
 ARG JAR_FILE=manager-server/target/*.jar
 COPY ${JAR_FILE} /var/lib/jetty/app.jar
 ENTRYPOINT java ${JAVA_OPTIONS} -jar /var/lib/jetty/app.jar --spring.config.location=file:///var/lib/jetty/application.yml\
+    --admin.user=${ADMIN_USER}\
+    --admin.password=${ADMIN_PASSWORD}\
     ${SPRING_PROPERTIES}
