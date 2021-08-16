@@ -13,8 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 
 /*
@@ -53,6 +52,8 @@ class UserCreationImporterTest {
 
 		//try to login
 		LocalDatabaseAuthProvider authProvider = new LocalDatabaseAuthProvider(userDAO, passwordService.getPasswordEncoder());
+		assertFalse(authProvider.login("admin1", "admin").isPresent());
+		assertFalse(authProvider.login("admin", "admin1").isPresent());
 		assertTrue(authProvider.login("admin", "admin").isPresent());
 	}
 
