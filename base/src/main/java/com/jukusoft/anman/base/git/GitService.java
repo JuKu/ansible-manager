@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
@@ -79,10 +80,50 @@ public class GitService {
 					.setBranch(branch)
 					.call();
 
+			LOGGER.info("git repository cloned successfully: {}", uri);
+
 			return Optional.of(git.getRepository());
 		} catch (GitAPIException e) {
 			LOGGER.warn("GitAPIException while cloning git repository: {}", uri, e);
 			return Optional.empty();
+		}
+	}
+
+	/**
+	 * clone a git repository from a uri, if the repository does not exists local.
+	 *
+	 * @param uri https uri to git repository
+	 *
+	 * @return optional instance of git repository
+	 */
+	public Optional<Repository> getOrClone(String uri) {
+		return getOrClone(uri, "master");
+	}
+
+	/**
+	 * clone a git repository from a uri, if the repository does not exists local.
+	 *
+	 * @param uri https uri to git repository
+	 * @param branch the branch to clone or checkout
+	 *
+	 * @return optional instance of git repository
+	 */
+	public Optional<Repository> getOrClone(String uri, String branch) {
+		LOGGER.debug("getOrClone: {}, branch: {}", uri, branch);
+
+		String dirPath = getRepoPath(uri);
+		File repoDir = new File(dirPath);
+
+		if (repoDir.exists()) {
+			try {
+				Git git = Git.open(repoDir);
+				return Optional.of(git.getRepository());
+			} catch (IOException e) {
+				LOGGER.warn("IOException while opening git repository: {}", repoDir.getAbsolutePath(), e);
+				return Optional.empty();
+			}
+		} else {
+			return clone(uri, branch);
 		}
 	}
 
