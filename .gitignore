@@ -434,6 +434,8 @@ local-properties.properties
 local-properties1.properties
 application.yml
 
+**/temp
+
 # Eclipse Gradle plugin generated files
 # Eclipse Core
 # JDT-specific (Eclipse Java Development Tools)
