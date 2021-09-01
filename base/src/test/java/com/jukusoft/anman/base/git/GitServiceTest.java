@@ -66,7 +66,7 @@ class GitServiceTest {
 		String uri = "https://github.com/JuKu/ansible-manager-frontend.git";
 
 		GitService service = createGitService();
-		Repository repository = service.clone(uri).orElseThrow();
+		Repository repository = service.clone(uri).orElseThrow().getRepository();
 
 		assertNotNull(repository);
 		assertFalse(repository.isBare());
@@ -96,13 +96,13 @@ class GitServiceTest {
 		assertFalse(new File(service.getRepoPath(REPO_URL)).exists());
 
 		//clone repository, this should clone the repository
-		Repository repo = service.getOrClone(REPO_URL).orElseThrow();
+		Repository repo = service.getOrClone(REPO_URL).orElseThrow().getRepository();
 
 		//check, if repository directory exists
 		assertTrue(new File(service.getRepoPath(REPO_URL)).exists());
 
 		//cal the method again, this should not clone the repository again
-		repo = service.getOrClone(REPO_URL).orElseThrow();
+		repo = service.getOrClone(REPO_URL).orElseThrow().getRepository();
 		assertTrue(new File(service.getRepoPath(REPO_URL)).exists());
 
 		//FileUtils.deleteDirectory(new File(TEMP_DIR));

@@ -57,7 +57,7 @@ public class GitService {
 	 *
 	 * @return
 	 */
-	public Optional<Repository> clone(String uri) {
+	public Optional<Git> clone(String uri) {
 		return clone(uri, "master");
 	}
 
@@ -69,7 +69,7 @@ public class GitService {
 	 *
 	 * @return
 	 */
-	public Optional<Repository> clone(String uri, String branch) {
+	public Optional<Git> clone(String uri, String branch) {
 		String dirPath = getRepoPath(uri);
 		LOGGER.info("clone new git repository: {}, output path: {}", uri, dirPath);
 
@@ -82,7 +82,7 @@ public class GitService {
 
 			LOGGER.info("git repository cloned successfully: {}", uri);
 
-			return Optional.of(git.getRepository());
+			return Optional.of(git);
 		} catch (GitAPIException e) {
 			LOGGER.warn("GitAPIException while cloning git repository: {}", uri, e);
 			return Optional.empty();
@@ -96,7 +96,7 @@ public class GitService {
 	 *
 	 * @return optional instance of git repository
 	 */
-	public Optional<Repository> getOrClone(String uri) {
+	public Optional<Git> getOrClone(String uri) {
 		return getOrClone(uri, "master");
 	}
 
@@ -108,7 +108,7 @@ public class GitService {
 	 *
 	 * @return optional instance of git repository
 	 */
-	public Optional<Repository> getOrClone(String uri, String branch) {
+	public Optional<Git> getOrClone(String uri, String branch) {
 		LOGGER.debug("getOrClone: {}, branch: {}", uri, branch);
 
 		String dirPath = getRepoPath(uri);
@@ -117,7 +117,7 @@ public class GitService {
 		if (repoDir.exists()) {
 			try {
 				Git git = Git.open(repoDir);
-				return Optional.of(git.getRepository());
+				return Optional.of(git);
 			} catch (IOException e) {
 				LOGGER.warn("IOException while opening git repository: {}", repoDir.getAbsolutePath(), e);
 				return Optional.empty();
