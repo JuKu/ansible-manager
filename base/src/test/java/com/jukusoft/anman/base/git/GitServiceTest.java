@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +35,7 @@ class GitServiceTest {
 	 * If the hashed values changes, this can be problematic, because the directory names would no longer identified.
 	 */
 	@Test
+	@EnabledOnOs({OS.WINDOWS, OS.MAC})
 	void testHashValues() {
 		GitService gitService = createGitService();
 		assertEquals("dba821cdc66092bf309f14dd350aa3e64acbcac6261a8a122cef8585a44d1252", gitService.hashValue("example"));
@@ -45,6 +48,7 @@ class GitServiceTest {
 	 * @throws IOException if the directory could not be created
 	 */
 	@Test
+	@EnabledOnOs({OS.WINDOWS, OS.MAC})
 	void postConstruct() throws IOException {
 		GitService service = createGitService();
 
@@ -62,6 +66,7 @@ class GitServiceTest {
 	 * test, if a git repository can be cloned.
 	 */
 	@Test
+	@EnabledOnOs({OS.WINDOWS, OS.MAC})
 	void testCloneRepository() throws IOException {
 		String uri = "https://github.com/JuKu/ansible-manager-frontend.git";
 
@@ -89,6 +94,7 @@ class GitServiceTest {
 	 * @throws IOException
 	 */
 	@Test
+	@EnabledOnOs({OS.WINDOWS, OS.MAC})
 	void testGetOrClone() throws IOException {
 		GitService service = createGitService();
 
