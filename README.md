@@ -51,10 +51,10 @@ You have to start 2 docker containers with the same database:
 
 # the roadmap
 
-## August 2021
+## August - December 2021
 
   - initialize project &#9745;
-  - authentication
+  - authentication &#9745;
   - LDAP integration (test with FreeIPA) &#9745;
   - permission system
   - Create admin user on first start &#9745;
