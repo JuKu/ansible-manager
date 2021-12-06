@@ -19,5 +19,8 @@ A clear and concise description of any alternative solutions or features you've 
 **Acceptance Criteria**
   - a list
 
+**Required Permissions to use this feature**
+  - every logged in user can use this feature
+
 **Additional context**
 Add any other context or screenshots about the feature request here.
