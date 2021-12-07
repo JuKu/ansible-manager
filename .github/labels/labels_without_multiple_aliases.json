@@ -171,7 +171,7 @@
 		]
 	},
 	{
-		"name": "type: feature-request",
+		"name": "type: feature request",
 		"color": "5ebeff",
 		"description": "Brand new functionality, features, pages, workflows, endpoints, etc., which is planned, but not approved",
 		"aliases": [
