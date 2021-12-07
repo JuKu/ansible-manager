@@ -1,0 +1,57 @@
+[
+	{
+		"token": "global.super.admin",
+		"title": "Super Admin (can do everything)",
+		"type": "global"
+	},
+	{
+		"token": "global.user.login",
+		"title": "Can login",
+		"type": "global"
+	},
+	{
+		"token": "global.role.can.see.global.roles",
+		"title": "Can see all global roles",
+		"type": "global"
+	},
+	{
+		"token": "global.role.can.edit.global.roles",
+		"title": "Can edit all global roles and set them to users",
+		"type": "global"
+	},
+	{
+		"token": "global.schedular.can.see.tasks",
+		"title": "Can see all schedular tasks",
+		"type": "global"
+	},
+	{
+		"token": "global.schedular.can.edit.tasks",
+		"title": "Can edit all schedular tasks",
+		"type": "global"
+	},
+	{
+		"token": "global.settings.can.see.all.settings",
+		"title": "Can see all global settings",
+		"type": "global"
+	},
+	{
+		"token": "global.can.see.own.projects",
+		"title": "Can see own projects",
+		"type": "global"
+	},
+	{
+		"token": "global.can.see.all.teams",
+		"title": "Can see all teams from all customers / projects",
+		"type": "global"
+	},
+	{
+		"token": "global.can.manage.all.teams",
+		"title": "Can manage (add, edit and delete) all teams from all customers / projects",
+		"type": "global"
+	},
+	{
+		"token": "global.can.see.api.version",
+		"title": "Can see api version",
+		"type": "global"
+	}
+]

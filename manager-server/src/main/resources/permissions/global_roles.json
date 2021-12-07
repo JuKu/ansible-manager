@@ -1,0 +1,12 @@
+[
+	{
+		"name": "super_admin",
+		"title": "Super Admin (can do everything)",
+		"default_permissions": [
+			"global.super.admin",
+			"global.can.see.own.projects",
+			"global.settings.can.see.all.settings",
+			"global.can.see.api.version"
+		]
+	}
+]
