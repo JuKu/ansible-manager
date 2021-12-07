@@ -1,4 +1,4 @@
-package com.jukusoft.anman.base.entity.general;
+package com.jukusoft.anman.base.entity.settings;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -8,6 +8,8 @@ import javax.validation.constraints.Size;
 
 /**
  * global settings entity
+ *
+ * @author Justin Kuenzel
  */
 @Entity
 @Table(name = "global_settings", indexes = {
@@ -35,12 +37,22 @@ public class GlobalSettingEntity {
     @NotEmpty(message = "title is required")
     private String title;
 
+	/**
+	 * default constructor.
+	 *
+	 * @param key the key of the setting
+	 * @param value current value of the setting
+	 * @param title title of the setting
+	 */
     public GlobalSettingEntity(@Size(min = 2, max = 45) @NotEmpty(message = "key is required") String key, @Size(min = 1, max = 900) @NotEmpty(message = "value is required") String value, @Size(min = 2, max = 255) @NotEmpty(message = "title is required") String title) {
         this.key = key;
         this.value = value;
         this.title = title;
     }
 
+	/**
+	 * default constructor.
+	 */
     public GlobalSettingEntity() {
         //
     }
