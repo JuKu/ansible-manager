@@ -7,9 +7,9 @@ echo "GitHub Access token: $token"
 
 set GITHUB_ACCESS_TOKEN $token
 
-github-label-sync -d -l labels.json JuKu/ansible-manager
+#github-label-sync -d -l labels_without_multiple_aliases.json JuKu/ansible-manager
 PAUSE
 
-github-label-sync -l labels.json JuKu/ansible-manager
+github-label-sync -l labels_without_multiple_aliases.json JuKu/ansible-manager --access-token $token
 
 PAUSE

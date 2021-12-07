@@ -4,10 +4,7 @@
 		"color": "d73a4a",
 		"description": "Introduces a breaking change.",
 		"aliases": [
-			"breaking change",
-			"breaking-change",
-			"Type: Breaking Change",
-			"type: breaking"
+			"breaking change"
 		]
 	},
 	{
@@ -39,25 +36,14 @@
 		"color": "7057ff",
 		"description": "Good for newcomers.",
 		"aliases": [
-			"beginner-friendly",
-			"beginner",
-			"good for beginner",
-			"Good for beginners",
-			"good-starter-issue",
-			"starter-issue",
-			"starter",
-			"status: good starter issue"
+			"good-starter-issue"
 		]
 	},
 	{
 		"name": "status: help wanted",
 		"color": "0e8a16",
 		"aliases": [
-			"help wanted",
-			"Patch Welcome",
-			"help",
-			"Status: PR Welcome",
-			"Status: Ready for PR"
+			"help"
 		]
 	},
 	{
@@ -111,9 +97,7 @@
 		"color": "d73a4a",
 		"description": "Something is blocking action.",
 		"aliases": [
-			"blocked",
-			"Status: Blocked",
-			"status: blocked"
+			"blocked"
 		]
 	},
 	{
@@ -121,12 +105,7 @@
 		"color": "fbca04",
 		"description": "Taking action, but need a few things to happen first. A feature that needs dependencies merged, or a bug that needs further data.",
 		"aliases": [
-			"in progress",
-			"on hold",
-			"pending",
-			"Status: In Progress",
-			"Status: Review Needed",
-			"watchlist"
+			"in progress"
 		]
 	},
 	{
@@ -134,17 +113,14 @@
 		"color": "e6e6e6",
 		"description": "No action needed or possible. The issue is either fixed, addressed better by other issues, or just out of product scope.",
 		"aliases": [
-			"invalid",
-			"stale",
-			"Status: Abandoned"
+			"invalid"
 		]
 	},
 	{
 		"name": "status: wontfix",
 		"color": "cccccc",
 		"aliases": [
-			"wontfix",
-			"wont-fix"
+			"wontfix"
 		]
 	},
 	{
@@ -159,8 +135,7 @@
 		"color": "d73a4a",
 		"description": "Something isn't working.",
 		"aliases": [
-			"bug",
-			"Type: Bug"
+			"bug"
 		]
 	},
 	{
@@ -168,15 +143,7 @@
 		"color": "fef2c0",
 		"description": "Converting measurements, reorganizing folder structure, and other necessary (but less impactful) tasks.",
 		"aliases": [
-			"chore",
-			"dependabot",
-			"dependencies",
-			"dependency",
-			"greenkeeper",
-			"legal",
-			"maintenance",
-			"Type: Maintenance",
-			"type: maintenance"
+			"chore"
 		]
 	},
 	{
@@ -184,30 +151,15 @@
 		"color": "d4c5f9",
 		"description": "Questions, proposals and info that requires discussion.",
 		"aliases": [
-			"discussion",
-			"feedback",
-			"help wanted",
-			"idea",
-			"Idea",
-			"Proposal",
-			"proposal",
-			"question",
-			"Type: Question",
-			"type: question"
+			"discussion"
 		]
 	},
 	{
-		"name": "type: docs",
+		"name": "type: documentation",
 		"color": "fef2c0",
 		"description": "Related to documentation and information.",
 		"aliases": [
-			"doc",
-			"docs",
-			"document",
-			"documentation",
-			"documents",
-			"Type: Documentation",
-			"type: documentation"
+			"docs"
 		]
 	},
 	{
@@ -215,9 +167,7 @@
 		"color": "5ebeff",
 		"description": "Brand new functionality, features, pages, workflows, endpoints, etc.",
 		"aliases": [
-			"addition",
-			"feature",
-			"Type: Feature"
+			"feature"
 		]
 	},
 	{
@@ -241,12 +191,7 @@
 		"color": "91ca55",
 		"description": "Iterations on existing features or infrastructure.",
 		"aliases": [
-			"fix",
-			"improvement",
-			"optimization",
-			"refactor",
-			"Type: Fix",
-			"Type: Refactoring"
+			"fix"
 		]
 	},
 	{
@@ -262,8 +207,7 @@
 		"color": "fbca04",
 		"description": "Related to testing.",
 		"aliases": [
-			"test",
-			"testing"
+			"test"
 		]
 	},
 	{
