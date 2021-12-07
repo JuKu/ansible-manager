@@ -62,3 +62,103 @@ You have to start 2 docker containers with the same database:
   - generation of inventory files
 
 //&#9744;
+
+See also: https://github.com/JuKu/ansible-manager/projects/1?add_cards_query=is%3Aopen
+
+# Deployment
+
+## example docker-compose.yml
+
+```text
+version: "3.1"
+
+networks:
+  ansible-manager:
+    external: true
+
+
+services:
+
+  mariadb:
+    image: bitnami/mariadb:latest
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=no
+#      - MARIADB_EXTRA_FLAGS='--max-connect-errors=1000 --max_connections=155'
+      - MARIADB_ROOT_USER=root
+      - MARIADB_ROOT_PASSWORD=<YOUR DB ROOT PASSWORD>
+      - MARIADB_DATABASE=ansible-manager
+      - MARIADB_USER=ansible-manager
+      - MARIADB_PASSWORD=<YOUR DB PASSWORD>
+    networks:
+      - ansible-manager
+    ports:
+      - 3306:3306
+    volumes:
+      - /opt/docker/volumes/mariadb:/bitnami/mariadb
+
+  ansible-manager:
+    image: jukusoft/anman-manager:master-latest
+    restart: always
+    environment:
+      - DATABASE_TYPE=mysql
+      - DATABASE_HOST=mariadb
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=ansible-manager
+      - DATABASE_USER=ansible-manager
+      - DATABASE_PASSWORD=<YOUR DB PASSWORD>
+    depends_on:
+      - mariadb
+    networks:
+      - ansible-manager
+    ports:
+      - 8081:8080
+    volumes:
+      - /opt/docker/run/ansible-manager/application.yml:/var/lib/jetty/application.yml
+
+  ansible-worker:
+    image: jukusoft/anman-worker:master-latest
+    restart: always
+    environment:
+      - DATABASE_TYPE=mysql
+      - DATABASE_HOST=mariadb
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=ansible-manager
+      - DATABASE_USER=ansible-manager
+      - DATABASE_PASSWORD=<YOUR DB PASSWORD>
+    depends_on:
+      - mariadb
+    networks:
+      - ansible-manager
+    ports:
+      - 8082:8080
+    volumes:
+      - /opt/docker/run/ansible-manager/application.yml:/var/lib/jetty/application.yml
+
+  anman-frontend:
+    image: jukusoft/anman-frontend:master-latest
+    restart: always
+    environment:
+      - BACKEND_API=http://<Your public Backend IP or Domain>:8081/
+      - DEFAULT_LANGUAGE=de
+    depends_on:
+      - ansible-manager
+    networks:
+      - ansible-manager
+    ports:
+      - 80:80
+
+  # if required
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_ABSOLUTE_URI=http://<Your public Backend IP or Domain>:8080/
+    depends_on:
+      - mariadb
+    networks:
+      - ansible-manager
+```
