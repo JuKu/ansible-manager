@@ -64,6 +64,7 @@ You have to start 2 docker containers with the same database:
 //&#9744;
 
 See also: https://github.com/JuKu/ansible-manager/projects/1?add_cards_query=is%3Aopen
+ZenHub: https://app.zenhub.com/workspaces/anman-61afc4e126f6d300107f6a88/board
 
 # Deployment
 
