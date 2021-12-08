@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,9 +31,9 @@ public class GlobalSettingsService {
 
 	public List<SettingDTO> listSettings() {
 		return StreamSupport.stream(settingDAO.findAll().spliterator(), false)
-				.filter(settingEntity -> settingEntity != null)
+				.filter(Objects::nonNull)
 				.map(settingEntity -> new SettingDTO(settingEntity.getKey(), settingEntity.getValue(), settingEntity.getTitle()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Cacheable(cacheNames = "global_settings", key = "'global_settings_'.concat(#key)")
@@ -40,7 +41,7 @@ public class GlobalSettingsService {
 		GlobalSettingEntity setting = settingDAO.findById(key).orElse(null);
 
 		return Stream.of(setting)
-				.filter(settingEntity -> settingEntity != null)
+				.filter(Objects::nonNull)
 				.map(settingEntity -> new SettingDTO(settingEntity.getKey(), settingEntity.getValue(), settingEntity.getTitle()))
 				.findFirst();
 	}
