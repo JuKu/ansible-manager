@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,25 +21,25 @@ import java.util.Arrays;
 @Profile("default")
 public class MVCConfig implements WebMvcConfigurer {
 
-    /**
-     * add resource handlers (e.q. for static resources.
-     *
-     * @param registry resource handler registry
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //
-    }
+	/**
+	 * add resource handlers (e.q. for static resources.
+	 *
+	 * @param registry resource handler registry
+	 */
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		//
+	}
 
-    /**
-     * add interceptors.
-     *
-     * @param registry interceptor registry
-     */
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        //add interceptors here, if neccessary
-    }
+	/**
+	 * add interceptors.
+	 *
+	 * @param registry interceptor registry
+	 */
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		//add interceptors here, if neccessary
+	}
 
 	/**
 	 * configure the CORS filter.

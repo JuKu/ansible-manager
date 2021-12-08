@@ -19,7 +19,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
- * this importer imports global settings, if absent
+ * this importer imports global settings, if absent.
+ *
+ * @author Justin Kuenzel
  */
 @Configuration
 @Profile("default")
@@ -27,11 +29,26 @@ public class GlobalSettingsImporter implements InitializingBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(GlobalSettingsImporter.class);
 
-	@Autowired
-	private GlobalSettingsService settingsService;
+	/**
+	 * the singleton instance of settings service.
+	 */
+	private final GlobalSettingsService settingsService;
 
-	@Autowired
-	private GlobalSettingDAO settingDAO;
+	/**
+	 * the singleton instance of the Data Access Object (repository) to access the database.
+	 */
+	private final GlobalSettingDAO settingDAO;
+
+	/**
+	 * default constructor.
+	 *
+	 * @param settingsService settings service
+	 * @param settingDAO settings data access object (repository)
+	 */
+	public GlobalSettingsImporter(@Autowired GlobalSettingsService settingsService, @Autowired GlobalSettingDAO settingDAO) {
+		this.settingsService = settingsService;
+		this.settingDAO = settingDAO;
+	}
 
 	/**
 	 * import default global settings, if absent
