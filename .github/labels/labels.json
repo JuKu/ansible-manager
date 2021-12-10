@@ -304,5 +304,20 @@
 		"aliases": [
 			"obvious"
 		]
+	},
+	{
+		"name": "loc: backend",
+		"color": "5319e7",
+		"description": "A backend task"
+	},
+	{
+		"name": "loc: frontend",
+		"color": "67ECB2",
+		"description": "A frontend-only task"
+	},
+	{
+		"name": "loc: fullstack",
+		"color": "213888",
+		"description": "A backend and frontend task"
 	}
 ]

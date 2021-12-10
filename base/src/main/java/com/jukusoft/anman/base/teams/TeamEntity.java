@@ -39,9 +39,30 @@ public class TeamEntity extends AbstractEntity {
 	private String name;
 
 	/**
+	 * the description of the team.
+	 */
+	@Size(min = 2, max = 900)
+	@Column(name = "description", unique = false, nullable = false, updatable = true)
+	@NotEmpty(message = "description is required")
+	private String description;
+
+	/**
 	 * a list of all team members.
 	 */
 	@ManyToMany(/*mappedBy = "id", */cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	private List<UserEntity> members;
+
+	/**
+	 * default constructor.
+	 *
+	 * @param customer the customer, where the teams belongs to
+	 * @param name the name of the team
+	 * @param description the description of the team
+	 */
+	public TeamEntity(CustomerEntity customer, String name, String description) {
+		this.customer = customer;
+		this.name = name;
+		this.description = description;
+	}
 
 }
