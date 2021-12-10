@@ -12,7 +12,7 @@ public class ImportUtils {
     }
 
 	public static boolean isInitialSettingsImportEnabled() {
-		return isInitialImportEnabled() && Boolean.parseBoolean(System.getProperty("import.global.settings", "true"));
+		return Boolean.parseBoolean(System.getProperty("import.global.settings", "true"));
 	}
 
 	public static void setInitialImportEnabled(boolean enabled) {
