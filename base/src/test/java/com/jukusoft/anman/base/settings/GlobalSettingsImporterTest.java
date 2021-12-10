@@ -71,4 +71,21 @@ public class GlobalSettingsImporterTest {
 		assertEquals(3, GSUtils.createGSService(false).listSettings().size());
 	}
 
+	@Test
+	void testImportWithAlreadyExistingData() throws Exception {
+		ImportUtils.setInitialImportEnabled(true);
+		ImportUtils.setInitialSettingsImportEnabled(true);
+
+		GSUtils.createGSService(false).addSetting("ldap.enabled", "true", "LDAP enabled");
+
+		assertEquals(1, GSUtils.createGSService(false).listSettings().size());
+
+		GlobalSettingsImporter importer = new GlobalSettingsImporter(GSUtils.createGSService(false), GSUtils.createDAOMock(false));
+		importer.afterPropertiesSet();
+
+		assertEquals(3, GSUtils.createGSService(false).listSettings().size());
+
+		GSUtils.cleanUp();
+	}
+
 }
