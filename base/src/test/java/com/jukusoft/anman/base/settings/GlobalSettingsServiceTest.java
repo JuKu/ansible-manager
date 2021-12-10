@@ -67,6 +67,23 @@ class GlobalSettingsServiceTest {
 		gsService.clearCache();
 	}
 
+	@Test
+	void testUpdateSetting() {
+		GlobalSettingsService gsService = createGSService();
+		assertTrue(gsService.listSettings().isEmpty());
+
+		//add some settings
+		gsService.addSetting("test1", "test-value-1", "test1");
+		gsService.addSetting("test2", "test-value-2", "test2");
+		gsService.addSetting("test3", "test-value-3", "test3");
+
+		assertEquals("test-value-1", gsService.getSetting("test1").get().getValue());
+
+		//update setting value
+		gsService.putSetting("test1", "new-value-1");
+		assertEquals("new-value-1", gsService.getSetting("test1").get().getValue());
+	}
+
 	/**
 	 * create a {@link GlobalSettingsService} instance with mocked DAO.
 	 *
