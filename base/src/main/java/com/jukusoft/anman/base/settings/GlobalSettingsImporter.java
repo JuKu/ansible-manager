@@ -90,9 +90,7 @@ public class GlobalSettingsImporter implements InitializingBean {
 				} else {
 					//create new setting
 					logger.info("create new global setting: {}", key);
-
-					GlobalSettingEntity setting = new GlobalSettingEntity(key, value, title);
-					settingDAO.save(setting);
+					settingsService.addSetting(key, value, title);
 				}
 			}
 

@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,6 +44,29 @@ class GlobalSettingsServiceTest {
 		assertEquals("test", opt.get().getValue());
 	}
 
+	@Test
+	void testListSettings() {
+		GlobalSettingsService gsService = createGSService();
+		assertTrue(gsService.listSettings().isEmpty());
+
+		//add some settings
+		gsService.addSetting("test1", "test", "test1");
+		gsService.addSetting("test2", "test", "test2");
+		gsService.addSetting("test3", "test", "test3");
+
+		assertFalse(gsService.listSettings().isEmpty());
+		assertEquals(3, gsService.listSettings().size());
+
+		//the order of the map is not guaranteed, so we have to check for keys here
+		List<String> keys = gsService.listSettings().stream().map(entity -> entity.getKey()).toList();
+		assertTrue(keys.contains("test1"));
+		assertTrue(keys.contains("test2"));
+		assertTrue(keys.contains("test3"));
+
+		gsService.clearCache("test1");
+		gsService.clearCache();
+	}
+
 	/**
 	 * create a {@link GlobalSettingsService} instance with mocked DAO.
 	 *
@@ -61,6 +85,8 @@ class GlobalSettingsServiceTest {
 				);
 		Mockito.when(daoMock.findById(anyString()))
 				.thenAnswer(entity -> Optional.ofNullable(emulatedSettings.get(entity.getArgument(0))));
+		Mockito.when(daoMock.findAll())
+				.thenReturn(emulatedSettings.values());
 
 		return new GlobalSettingsService(daoMock);
 	}

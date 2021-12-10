@@ -73,6 +73,26 @@ public class GlobalSettingsService {
 		}
 	}
 
+	/**
+	 * add a new setting to database.
+	 *
+	 * @param key key of the setting
+	 * @param value value of the setting
+	 * @param title title of setting (which is shown in UI)
+	 */
+	public void addSetting(String key, String value, String title) {
+		Objects.requireNonNull(key);
+		Objects.requireNonNull(value);
+		Objects.requireNonNull(title);
+
+		if (key.isBlank()) {
+			throw new IllegalArgumentException("setting key cannot be empty");
+		}
+
+		GlobalSettingEntity setting = new GlobalSettingEntity(key, value, title);
+		settingDAO.save(setting);
+	}
+
 	@CacheEvict(cacheNames = "global_settings", key = "'global_settings_'.concat(#key)")
 	public void clearCache(String key) {
 		//
