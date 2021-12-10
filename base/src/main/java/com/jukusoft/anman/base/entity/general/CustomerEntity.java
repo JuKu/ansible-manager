@@ -1,7 +1,6 @@
 package com.jukusoft.anman.base.entity.general;
 
 import com.jukusoft.anman.base.entity.user.UserEntity;
-import com.jukusoft.anman.base.entity.user.UserPreferencesEntity;
 import com.jukusoft.anman.base.teams.TeamEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
