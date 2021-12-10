@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -31,8 +32,12 @@ public class GlobalSettingsImporterTest {
 
 	@Test
 	void testImport() throws Exception {
+		assertEquals(0, GSUtils.createGSService(false).listSettings().size());
+
 		GlobalSettingsImporter importer = new GlobalSettingsImporter(GSUtils.createGSService(false), GSUtils.createDAOMock(false));
 		importer.afterPropertiesSet();
+
+		assertEquals(3, GSUtils.createGSService(false).listSettings().size());
 	}
 
 }
