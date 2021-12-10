@@ -2,6 +2,7 @@ package com.jukusoft.anman.base.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jukusoft.anman.base.entity.general.AbstractEntity;
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.general.LogEntryEntity;
 import com.jukusoft.authentification.jwt.account.IAccount;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -22,6 +23,10 @@ import java.util.Objects;
 @Cacheable//use second level cache
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserEntity extends AbstractEntity implements IAccount {
+
+	@ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", nullable = false, updatable = false)//don't use an extra table, use join column instead
+	private CustomerEntity customer;
 
     @Size(min = 2, max = 45)
     @Column(name = "username", unique = true, nullable = false, updatable = true)
@@ -72,13 +77,15 @@ public class UserEntity extends AbstractEntity implements IAccount {
     @Column(name = "lastname", unique = false, nullable = false, updatable = true)
     private String lastname;
 
-    public UserEntity(@Size(min = 2, max = 45) @NotEmpty(message = "username is required") String username, String prename, String lastname) {
+    public UserEntity(CustomerEntity customer, @Size(min = 2, max = 45) @NotEmpty(message = "username is required") String username, String prename, String lastname) {
+        Objects.requireNonNull(customer);
         Objects.requireNonNull(username);
 
         if (username.isEmpty()) {
             throw new IllegalArgumentException("username cannot be empty");
         }
 
+		this.customer = customer;
         this.username = username;
         this.prename = prename;
         this.lastname = lastname;

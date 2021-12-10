@@ -1,5 +1,6 @@
 package com.jukusoft.anman.base.importer;
 
+import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.security.provider.LocalDatabaseAuthProvider;
@@ -35,6 +36,9 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 class UserCreationImporterTest {
 
 	@Autowired
+	private CustomerDAO customerDAO;
+
+	@Autowired
 	private UserDAO userDAO;
 
 	/**
@@ -47,7 +51,7 @@ class UserCreationImporterTest {
 		//check, that the users table is empty
 		assertEquals(0, userDAO.count());
 
-		UserCreationImporter importer = new UserCreationImporter(userDAO, passwordService);
+		UserCreationImporter importer = new UserCreationImporter(customerDAO, userDAO, passwordService);
 		importer.afterPropertiesSet();
 
 		assertEquals(1, userDAO.count());
@@ -73,7 +77,7 @@ class UserCreationImporterTest {
 		//return same UserEntity object without store them in database, so id will not be changed
 		when(userDAO1.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		UserCreationImporter importer1 = new UserCreationImporter(userDAO1, passwordService);
+		UserCreationImporter importer1 = new UserCreationImporter(customerDAO, userDAO1, passwordService);
 		assertThrows(IllegalStateException.class, () -> importer1.afterPropertiesSet());
 	}
 

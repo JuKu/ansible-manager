@@ -1,6 +1,8 @@
 package com.jukusoft.anman.base.security.provider;
 
+import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.RoleEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.security.AccountService;
@@ -42,6 +44,9 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 class LocalDatabaseAuthProviderTest {
 
 	@Autowired
+	private CustomerDAO customerDAO;
+
+	@Autowired
 	private UserDAO userDAO;
 
 	/**
@@ -62,8 +67,12 @@ class LocalDatabaseAuthProviderTest {
 		String salt = passwordService.generateSalt();
 		authProvider = new LocalDatabaseAuthProvider(userDAO, passwordService.getPasswordEncoder());
 
+		//create customer
+		CustomerEntity customer = new CustomerEntity("super-admin");
+		customer = customerDAO.save(customer);
+
 		//create some sample user entries
-		UserEntity user = new UserEntity("test", "prename", "lastname");
+		UserEntity user = new UserEntity(customer, "test", "prename", "lastname");
 		user.setPassword(passwordService.encodePassword("test1234", salt));
 		user.setSalt(salt);
 
@@ -114,7 +123,7 @@ class LocalDatabaseAuthProviderTest {
 	void testProvider() {
 		List<AuthProvider> authProviderList = new ArrayList<>();
 		authProviderList.add(new LocalDatabaseAuthProvider(userDAO, new BCryptPasswordEncoder()));
-		AccountService service = new AccountService(userDAO, authProviderList, "local-database");
+		AccountService service = new AccountService(customerDAO, userDAO, authProviderList, "local-database");
 		service.init();
 
 		Optional<AccountDTO> accountDTO = service.loginUser("test", "test1234");
@@ -123,7 +132,7 @@ class LocalDatabaseAuthProviderTest {
 		//second test
 		authProviderList = new ArrayList<>();
 		authProviderList.add(new DummyAuthProvider());
-		service = new AccountService(userDAO, authProviderList, "dummy-auth-provider");
+		service = new AccountService(customerDAO, userDAO, authProviderList, "dummy-auth-provider");
 		service.init();
 
 		accountDTO = service.loginUser("test5678", "test1234");

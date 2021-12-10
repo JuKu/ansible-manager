@@ -1,5 +1,6 @@
 package com.jukusoft.anman.base.security;
 
+import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.authentification.jwt.account.AccountDTO;
@@ -29,6 +30,11 @@ public class AccountService implements IAccountService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
 
 	/**
+	 * the customer dao.
+	 */
+	private CustomerDAO customerDAO;
+
+	/**
 	 * the user dao.
 	 */
 	private UserDAO userDAO;
@@ -48,13 +54,14 @@ public class AccountService implements IAccountService {
 	 *
 	 * @param authProviders list with authentication providers
 	 */
-	public AccountService(@Autowired UserDAO userDAO, @Autowired List<AuthProvider> authProviders, @Value("${auth.providers}") String authProviderConfig) {
+	public AccountService(@Autowired CustomerDAO customerDAO, @Autowired UserDAO userDAO, @Autowired List<AuthProvider> authProviders, @Value("${auth.providers}") String authProviderConfig) {
 		Objects.requireNonNull(authProviderConfig);
 
 		if (authProviderConfig.isEmpty()) {
 			throw new IllegalArgumentException("auth provider config cannot be null");
 		}
 
+		this.customerDAO = customerDAO;
 		this.userDAO = userDAO;
 		this.authProviderList = authProviders;
 		this.authProviderConfig = authProviderConfig;
@@ -117,7 +124,7 @@ public class AccountService implements IAccountService {
 				//check, if user exists in database
 				if (userDAO.findOneByUsername(username).isEmpty()) {
 					LOGGER.info("login user '{}' successfully, but user does not exists in database - create user in database now", username);
-					UserEntity user = new UserEntity(username, accountDTO.get().getPreName(), accountDTO.get().getLastname());
+					UserEntity user = new UserEntity(customerDAO.findOneByName("super-admin").get(), username, accountDTO.get().getPreName(), accountDTO.get().getLastname());
 					user.setPassword("not_local");
 					userDAO.save(user);
 				}

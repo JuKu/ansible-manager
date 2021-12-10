@@ -1,6 +1,8 @@
 package com.jukusoft.anman.base.security;
 
+import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.security.provider.DummyAuthProvider;
 import com.jukusoft.anman.base.security.provider.LocalDatabaseAuthProvider;
@@ -45,12 +47,12 @@ class AccountServiceTest {
     void testConstructor() {
         List<AuthProvider> authProviderList = new CopyOnWriteArrayList<>();
 
-        assertThrows(IllegalArgumentException.class, () -> new AccountService(Mockito.mock(UserDAO.class), authProviderList, ""));
-        AccountService service = new AccountService(Mockito.mock(UserDAO.class), authProviderList, "dummy-auth-provider");
+        assertThrows(IllegalArgumentException.class, () -> new AccountService(Mockito.mock(CustomerDAO.class), Mockito.mock(UserDAO.class), authProviderList, ""));
+        AccountService service = new AccountService(Mockito.mock(CustomerDAO.class), Mockito.mock(UserDAO.class), authProviderList, "dummy-auth-provider");
         assertThrows(IllegalStateException.class, () -> service.init());
 
         authProviderList.add(new DummyAuthProvider());
-        AccountService service1 = new AccountService(Mockito.mock(UserDAO.class), authProviderList, "local-database");
+        AccountService service1 = new AccountService(Mockito.mock(CustomerDAO.class), Mockito.mock(UserDAO.class), authProviderList, "local-database");
         assertThrows(IllegalStateException.class, () -> service1.init());
     }
 
@@ -59,8 +61,9 @@ class AccountServiceTest {
      */
     @Test
     void testLogin() {
+		CustomerDAO customerDAO = Mockito.mock(CustomerDAO.class);
         UserDAO userDAO = Mockito.mock(UserDAO.class);
-        UserEntity user = new UserEntity("test", "test", "test");
+        UserEntity user = new UserEntity(new CustomerEntity("test-customer"), "test", "test", "test");
         String encodedPassword = passwordEncoder.encode("test1234");
         user.setPassword(encodedPassword);
         user.forceID(2);
@@ -70,7 +73,7 @@ class AccountServiceTest {
         List<AuthProvider> authProviderList = new ArrayList<>();
         authProviderList.add(new DummyAuthProvider());
 
-        AccountService service = new AccountService(userDAO, authProviderList, "dummy-auth-provider");
+        AccountService service = new AccountService(customerDAO, userDAO, authProviderList, "dummy-auth-provider");
         service.init();
         Optional<AccountDTO> accountDTO = service.loginUser("test", "test1234");
         assertTrue(accountDTO.isPresent());
@@ -79,8 +82,9 @@ class AccountServiceTest {
 
     @Test
     void testWrongLogin() {
+		CustomerDAO customerDAO = Mockito.mock(CustomerDAO.class);
         UserDAO userDAO = Mockito.mock(UserDAO.class);
-        UserEntity user = new UserEntity("test", "test", "test");
+        UserEntity user = new UserEntity(new CustomerEntity("test-customer"), "test", "test", "test");
         String encodedPassword = passwordEncoder.encode("test5678");
         user.setPassword(encodedPassword);
         when(userDAO.findOneByUsername(anyString())).thenReturn(Optional.of(user));
@@ -88,7 +92,7 @@ class AccountServiceTest {
         assertFalse(passwordEncoder.matches( "test1234", encodedPassword));
 
         List<AuthProvider> authProviderList = new ArrayList<>();
-        AccountService service = new AccountService(userDAO, authProviderList, "dummy-auth-provider");
+        AccountService service = new AccountService(customerDAO, userDAO, authProviderList, "dummy-auth-provider");
         Optional<AccountDTO> accountDTO = service.loginUser("test", "test1234");
         assertTrue(accountDTO.isEmpty());
     }

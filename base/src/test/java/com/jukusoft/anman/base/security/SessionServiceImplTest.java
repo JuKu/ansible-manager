@@ -5,6 +5,7 @@ package com.jukusoft.anman.base.security;/*
  */
 
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.PermissionEntity;
 import com.jukusoft.anman.base.entity.user.RoleEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
@@ -35,7 +36,7 @@ class SessionServiceImplTest {
     @BeforeAll
     static void beforeAll() {
         UserDAO userDAO = Mockito.mock(UserDAO.class);
-        UserEntity userEntity = new UserEntity("test", "test", "test");
+        UserEntity userEntity = new UserEntity(new CustomerEntity("example-customer"), "test", "test", "test");
         userEntity.forceID(1);
 
         RoleEntity roleEntity = new RoleEntity("test-role");
