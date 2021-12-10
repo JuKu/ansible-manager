@@ -47,11 +47,22 @@ public class GlobalSettingsImporterTest {
 
 		//if the importer was skipped, there should be no setting in the database
 		assertEquals(0, GSUtils.createGSService(false).listSettings().size());
+
+		//try the same thing with initial import enabled, but settings import disabled
+		ImportUtils.setInitialImportEnabled(true);
+		ImportUtils.setInitialSettingsImportEnabled(false);
+
+		importer.afterPropertiesSet();
+
+		//if the importer was skipped, there should be no setting in the database
+		assertEquals(0, GSUtils.createGSService(false).listSettings().size());
 	}
 
 	@Test
 	void testImport() throws Exception {
 		ImportUtils.setInitialImportEnabled(true);
+		ImportUtils.setInitialSettingsImportEnabled(true);
+
 		assertEquals(0, GSUtils.createGSService(false).listSettings().size());
 
 		GlobalSettingsImporter importer = new GlobalSettingsImporter(GSUtils.createGSService(false), GSUtils.createDAOMock(false));

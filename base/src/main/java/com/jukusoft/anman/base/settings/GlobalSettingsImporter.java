@@ -62,7 +62,7 @@ public class GlobalSettingsImporter implements InitializingBean {
 			return;
 		}
 
-		if (Boolean.parseBoolean(System.getProperty("import.global.settings", "true"))) {
+		if (ImportUtils.isInitialSettingsImportEnabled()) {
 			logger.info("import global settings, if absent");
 
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
