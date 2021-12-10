@@ -23,10 +23,19 @@ import java.util.stream.StreamSupport;
 @Service
 public class GlobalSettingsService {
 
+	/**
+	 * the logger.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(GlobalSettingsService.class);
 
-	@Autowired
-	private GlobalSettingDAO settingDAO;
+	/**
+	 * settings DAO (repository).
+	 */
+	private final GlobalSettingDAO settingDAO;
+
+	public GlobalSettingsService(@Autowired GlobalSettingDAO settingDAO) {
+		this.settingDAO = settingDAO;
+	}
 
 	public List<SettingDTO> listSettings() {
 		return StreamSupport.stream(settingDAO.findAll().spliterator(), false)
@@ -51,12 +60,13 @@ public class GlobalSettingsService {
 
 		if (!settingEntityOptional.isPresent()) {
 			//create new setting entity
-			logger.info("create new setting");
+			logger.info("create new setting, because setting does not exists: {}", key);
 
 			GlobalSettingEntity setting = new GlobalSettingEntity(key, value, key);
 			settingDAO.save(setting);
 		} else {
 			GlobalSettingEntity setting = settingEntityOptional.get();
+			logger.info("update global setting: {}", key);
 
 			setting.setValue(value);
 			settingDAO.save(setting);
