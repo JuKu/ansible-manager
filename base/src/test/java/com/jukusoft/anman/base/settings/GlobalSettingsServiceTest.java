@@ -2,6 +2,8 @@ package com.jukusoft.anman.base.settings;
 
 import com.jukusoft.anman.base.dao.GlobalSettingDAO;
 import com.jukusoft.anman.base.entity.settings.GlobalSettingEntity;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -21,6 +23,16 @@ import static org.mockito.ArgumentMatchers.anyString;
  * @author Justin Kuenzel
  */
 class GlobalSettingsServiceTest {
+
+	@BeforeAll
+	public static void beforeClass() {
+		GSUtils.cleanUp();
+	}
+
+	@AfterAll
+	public static void afterClass() {
+		GSUtils.cleanUp();
+	}
 
 	/**
 	 * the method checks, that the constructor does not throws an exception.
@@ -99,22 +111,7 @@ class GlobalSettingsServiceTest {
 	 * @return GlobalSettingsService instance with mocked DAO
 	 */
 	protected GlobalSettingsService createGSService() {
-		Map<String, GlobalSettingEntity> emulatedSettings = new HashMap();
-		GlobalSettingDAO daoMock = Mockito.mock(GlobalSettingDAO.class);
-		Mockito.when(daoMock.save(any(GlobalSettingEntity.class)))
-				.thenAnswer((Answer<GlobalSettingEntity>) invocation -> {
-							GlobalSettingEntity entity = invocation.getArgument(0);
-							emulatedSettings.put(entity.getKey(), entity);
-
-							return entity;
-						}
-				);
-		Mockito.when(daoMock.findById(anyString()))
-				.thenAnswer(entity -> Optional.ofNullable(emulatedSettings.get(entity.getArgument(0))));
-		Mockito.when(daoMock.findAll())
-				.thenReturn(emulatedSettings.values());
-
-		return new GlobalSettingsService(daoMock);
+		return GSUtils.createGSService(true);
 	}
 
 }

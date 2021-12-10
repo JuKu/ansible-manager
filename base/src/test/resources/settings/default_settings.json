@@ -1,0 +1,17 @@
+[
+	{
+		"title": "LDAP enabled",
+		"key": "ldap.enabled",
+		"value": "false"
+	},
+	{
+		"title": "Should LDAP server automatically create new users from LDAP in database?",
+		"key": "ldap.autocreate.user",
+		"value": "true"
+	},
+	{
+		"title": "JWT Secret",
+		"key": "jwt.secret.password",
+		"value": "password"
+	}
+]
