@@ -11,4 +11,8 @@ public class ImportUtils {
         return Boolean.parseBoolean(System.getProperty("initial.import.enabled", "true"));
     }
 
+	public static void setInitialImportEnabled(boolean enabled) {
+		System.setProperty("initial.import.enabled", Boolean.toString(enabled));
+	}
+
 }

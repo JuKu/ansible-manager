@@ -1,5 +1,6 @@
 package com.jukusoft.anman.base.settings;
 
+import com.jukusoft.anman.base.utils.ImportUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,26 @@ public class GlobalSettingsImporterTest {
 	}
 
 	@Test
+	void testSkipImport() throws Exception {
+		ImportUtils.setInitialImportEnabled(false);
+
+		//create a new global settings service without state
+		GlobalSettingsService gsService = GSUtils.createGSService(true);
+
+		//first check, that the database is empty
+		assertEquals(0, gsService.listSettings().size());
+
+		//execute the importer
+		GlobalSettingsImporter importer = new GlobalSettingsImporter(GSUtils.createGSService(false), GSUtils.createDAOMock(false));
+		importer.afterPropertiesSet();
+
+		//if the importer was skipped, there should be no setting in the database
+		assertEquals(0, GSUtils.createGSService(false).listSettings().size());
+	}
+
+	@Test
 	void testImport() throws Exception {
+		ImportUtils.setInitialImportEnabled(true);
 		assertEquals(0, GSUtils.createGSService(false).listSettings().size());
 
 		GlobalSettingsImporter importer = new GlobalSettingsImporter(GSUtils.createGSService(false), GSUtils.createDAOMock(false));
