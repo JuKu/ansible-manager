@@ -2,11 +2,13 @@ package com.jukusoft.anman.base.teams;
 
 import com.jukusoft.anman.base.entity.general.AbstractEntity;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
+import com.jukusoft.anman.base.entity.user.UserEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * This entity represents a single team.
@@ -35,5 +37,11 @@ public class TeamEntity extends AbstractEntity {
 	@Column(name = "name", unique = false, nullable = false, updatable = true)
 	@NotEmpty(message = "name is required")
 	private String name;
+
+	/**
+	 * a list of all team members.
+	 */
+	@ManyToMany(/*mappedBy = "id", */cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	private List<UserEntity> members;
 
 }

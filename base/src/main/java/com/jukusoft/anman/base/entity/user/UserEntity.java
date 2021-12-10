@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jukusoft.anman.base.entity.general.AbstractEntity;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.general.LogEntryEntity;
+import com.jukusoft.anman.base.teams.TeamEntity;
 import com.jukusoft.authentification.jwt.account.IAccount;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -76,6 +77,12 @@ public class UserEntity extends AbstractEntity implements IAccount {
     @Size(min = 2, max = 90)
     @Column(name = "lastname", unique = false, nullable = false, updatable = true)
     private String lastname;
+
+	/**
+	 * a list of all teams, the user belongs to.
+	 */
+	@ManyToMany(/*mappedBy = "id", */cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	private List<TeamEntity> teams;
 
     public UserEntity(CustomerEntity customer, @Size(min = 2, max = 45) @NotEmpty(message = "username is required") String username, String prename, String lastname) {
         Objects.requireNonNull(customer);
