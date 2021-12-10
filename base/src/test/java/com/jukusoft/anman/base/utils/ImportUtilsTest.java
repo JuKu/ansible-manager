@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Justin Kuenzel
  */
-public class ImportUtilsTest {
+class ImportUtilsTest {
 
 	@Test
 	void testIsInitialImportEnabled() {
