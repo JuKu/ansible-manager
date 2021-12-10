@@ -68,6 +68,15 @@ class GlobalSettingsServiceTest {
 	}
 
 	@Test
+	void testAddBlankKeySetting() {
+		GlobalSettingsService gsService = createGSService();
+		assertTrue(gsService.listSettings().isEmpty());
+
+		//add some settings
+		assertThrows(IllegalArgumentException.class, () -> gsService.addSetting("", "test-value-1", "test1"));
+	}
+
+	@Test
 	void testUpdateSetting() {
 		GlobalSettingsService gsService = createGSService();
 		assertTrue(gsService.listSettings().isEmpty());
