@@ -56,6 +56,13 @@ public class CustomerEntity extends AbstractEntity {
 	private boolean deletable = true;
 
 	/**
+	 * a flag, if the customer is editable.
+	 * This flag is required, because the admin "customer" (the first customer) cannot be edited, because it contains the super admin.
+	 */
+	@Column(name = "editable", nullable = false)
+	private boolean editable = true;
+
+	/**
 	 * default constructor.
 	 *
 	 * @param name unique name of the customer
@@ -75,6 +82,14 @@ public class CustomerEntity extends AbstractEntity {
 		return name;
 	}
 
+	public void setName(String name) {
+		if (!this.editable) {
+			throw new IllegalStateException("The customer '" + this.getName() + "' is not editable");
+		}
+
+		this.name = name;
+	}
+
 	public List<UserEntity> getUsers() {
 		return users;
 	}
@@ -89,6 +104,14 @@ public class CustomerEntity extends AbstractEntity {
 
 	public void setDeletable(boolean deletable) {
 		this.deletable = deletable;
+	}
+
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 }

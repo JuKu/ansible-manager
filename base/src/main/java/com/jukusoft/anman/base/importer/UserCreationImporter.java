@@ -82,6 +82,7 @@ public class UserCreationImporter implements InitializingBean {
 
 			CustomerEntity customer = new CustomerEntity("super-admin");
 			customer.setDeletable(false);
+			customer.setEditable(false);
 			customerDAO.save(customer);
 		}
 
