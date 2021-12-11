@@ -47,4 +47,12 @@ class UserHelperServiceTest {
 		assertEquals(userEntity, service.getCurrentUser());
 	}
 
+	@Test
+	void testGetUserById() {
+		UserDAO userDAO = Mockito.mock(UserDAO.class);
+		when(userDAO.findById(anyLong())).thenReturn(Optional.of(Mockito.mock(UserEntity.class)));
+		UserHelperService service = new UserHelperService(userDAO);
+		assertNotNull(service.getUserById(1l));
+	}
+
 }
