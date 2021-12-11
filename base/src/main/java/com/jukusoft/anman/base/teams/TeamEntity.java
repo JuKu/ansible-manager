@@ -65,4 +65,20 @@ public class TeamEntity extends AbstractEntity {
 		this.description = description;
 	}
 
+	public CustomerEntity getCustomer() {
+		return customer;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public List<UserEntity> getMembers() {
+		return members;
+	}
+
 }

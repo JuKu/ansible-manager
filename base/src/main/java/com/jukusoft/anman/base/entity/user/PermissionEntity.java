@@ -30,6 +30,11 @@ public class PermissionEntity implements Serializable {
          */
         PROJECT_LOCAL,
 
+		/**
+		 * a team local permission, which is only set for a specific team
+		 */
+		TEAM_LOCAL,
+
         /**
          * a customer local permission, which is only set for a specific customer (customer-dependent permission)
          */
