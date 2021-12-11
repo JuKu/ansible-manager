@@ -81,13 +81,13 @@ public class TeamService {
 		}
 
 		return customerOpt.get().getTeams().stream()
-				.map(teamEntity -> mapTeamEntityToDTO(teamEntity))
+				.map(this::mapTeamEntityToDTO)
 				.toList();
 	}
 
 	@Cacheable(cacheNames = "team_dto", key = "'team_dto_'.concat(#teamID)")
 	public Optional<TeamDTO> getTeam(long teamID) {
-		return teamDAO.findOneById(teamID).map(entity -> mapTeamEntityToDTO(entity));
+		return teamDAO.findOneById(teamID).map(this::mapTeamEntityToDTO);
 	}
 
 	protected TeamDTO mapTeamEntityToDTO(TeamEntity entity) {
@@ -117,7 +117,7 @@ public class TeamService {
 		}
 
 		//check, if user is member of team
-		return teamEntityOpt.get().getMembers().contains(teamEntityOpt.get());
+		return teamEntityOpt.get().getMembers().contains(userEntityOpt.get());
 	}
 
 	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
