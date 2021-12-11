@@ -1,7 +1,9 @@
 package com.jukusoft.anman.base.teams;
 
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,5 +14,7 @@ public interface TeamDAO extends PagingAndSortingRepository<TeamEntity, Long> {
 	public Optional<TeamEntity> findOneByName(String name);
 
 	public Optional<TeamEntity> findOneById(long id);
+
+	public List<TeamEntity> findAllByCustomer(CustomerEntity customer);
 
 }

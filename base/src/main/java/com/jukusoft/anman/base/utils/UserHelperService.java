@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * a utility service to get the current user of the current context.
@@ -48,5 +49,11 @@ public class UserHelperService {
 
         return userDAO.findById(userID).orElseThrow();
     }
+
+	public Optional<UserEntity> getUserById(long userID) {
+		//TODO: add caching
+
+		return userDAO.findById(userID);
+	}
 
 }
