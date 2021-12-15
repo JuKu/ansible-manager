@@ -55,7 +55,7 @@ public class GlobalSettingsImporter implements InitializingBean {
 	 *
 	 * @throws Exception
 	 */
-	@Bean(name = "global_settings_import")
+	//@Bean(name = "global_settings_import")
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		if (!ImportUtils.isInitialImportEnabled()) {
