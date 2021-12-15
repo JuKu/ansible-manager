@@ -45,6 +45,11 @@
 		"type": "global"
 	},
 	{
+		"token": "customer.can.see.all.teams",
+		"title": "Can see all teams from customer",
+		"type": "customer"
+	},
+	{
 		"token": "global.can.manage.all.teams",
 		"title": "Can manage (add, edit and delete) all teams from all customers / projects",
 		"type": "global"
