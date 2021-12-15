@@ -33,7 +33,7 @@ public class TeamController {
 	 *
 	 * @return list with all teams of the customer
 	 */
-	@GetMapping(path = "/teams/list-own-teams")
+	@GetMapping(path = "/teams/list-customer-teams")
 	public ResponseEntity<List<TeamDTO>> listAllTeams() {
 		//TODO: check permissions
 
