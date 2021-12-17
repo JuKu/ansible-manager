@@ -163,3 +163,18 @@ services:
     networks:
       - ansible-manager
 ```
+
+# Changelogs
+
+## V0.1.0 (WIP)
+
+**New Features**:
+
+  - Added example docker-compose.yml in README, see #5
+  - Added global settings, see #10
+
+**Developer Improvements**:
+
+  - Upgrade spring version, see #15
+  - Fix a security leak in log4j, see #13
+  - Upgrade springfox swagger to Springdocs, see #16
