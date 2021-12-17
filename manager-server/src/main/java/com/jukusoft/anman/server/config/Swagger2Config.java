@@ -1,18 +1,16 @@
 package com.jukusoft.anman.server.config;
 
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * swagger configuration.
@@ -20,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author Justin Kuenzel
  */
 @Configuration
-@EnableSwagger2
+//@EnableSwagger2
 @Profile("default")
 public class Swagger2Config {
 
@@ -73,33 +71,26 @@ public class Swagger2Config {
     private String version;
 
     /**
-     * create a swagger docket.
-     *
-     * @return swagger docket
-     */
-    @Bean
-    @Conditional(SwaggerCondition.class)
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors
-                        .basePackage("com.jukusoft"))
-                .paths(PathSelectors.any())//PathSelectors.regex("/.*")
-                .build().apiInfo(apiEndPointsInfo());
-    }
-
-    /**
      * create and configure the api endpoints information.
      *
      * @return api endpoint information
      */
-    private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder().title(title)
-                .description(description)
-                .contact(new Contact(contactName, contactUrl, contactMail))
-                .license(licenseName)
-                .licenseUrl(licenseUrl)
-                .version(version)
-                .build();
-    }
+	@Bean
+	public OpenAPI anmanOpenAPI() {
+		Contact contact = new Contact();
+		contact.setName(contactName);
+		contact.setUrl(contactUrl);
+		contact.setEmail(contactMail);
+
+		return new OpenAPI()
+				.info(new Info().title(title)
+						.description(description)
+						.version(version)
+						.license(new License().name(licenseName).url(licenseUrl))
+						.contact(contact))
+				.externalDocs(new ExternalDocumentation()
+						.description(contactName)
+						.url(contactUrl));
+	}
 
 }

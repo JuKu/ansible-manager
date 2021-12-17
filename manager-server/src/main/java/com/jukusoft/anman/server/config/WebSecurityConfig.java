@@ -23,7 +23,7 @@ public class WebSecurityConfig extends JWTWebSecurityConfig {
      */
     @Override
     protected String[] listPermittedPages() {
-        return new String[]{"/", "/api/register", "/swagger", "/swagger-ui", "/swagger-ui.html", "/h2/**", "/swagger/**", "/swagger-*", "/swagger-ui/**", "/swagger-resources/**", "/csrf", "/v2/**", "/webjars/**", "/actuator", "/actuator/*", "/errors/*", "/error", "/pages/*", "/res/**"};
+        return new String[]{"/", "/api/register", "/swagger", "/swagger-ui", "/swagger-ui.html", "/h2/**", "/swagger/**", "/swagger-*", "/swagger-ui/**", "/swagger-resources/**", "/csrf", "/v2/**", "/v3/**", "/webjars/**", "/actuator", "/actuator/*", "/errors/*", "/error", "/pages/*", "/res/**"};
     }
 
 }
