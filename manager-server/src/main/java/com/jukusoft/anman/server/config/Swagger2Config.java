@@ -5,10 +5,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
-import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -22,59 +20,59 @@ import org.springframework.context.annotation.Profile;
 @Profile("default")
 public class Swagger2Config {
 
-    /**
-     * the swagger ui title.
-     */
-    @Value("${swagger.title}")
-    private String title;
+	/**
+	 * the swagger ui title.
+	 */
+	@Value("${swagger.title}")
+	private String title;
 
-    /**
-     * the swagger ui description.
-     */
-    @Value("${swagger.description}")
-    private String description;
+	/**
+	 * the swagger ui description.
+	 */
+	@Value("${swagger.description}")
+	private String description;
 
-    /**
-     * the swagger ui contact name.
-     */
-    @Value("${swagger.contact.name}")
-    private String contactName;
+	/**
+	 * the swagger ui contact name.
+	 */
+	@Value("${swagger.contact.name}")
+	private String contactName;
 
-    /**
-     * the swagger ui contact url.
-     */
-    @Value("${swagger.contact.url}")
-    private String contactUrl;
+	/**
+	 * the swagger ui contact url.
+	 */
+	@Value("${swagger.contact.url}")
+	private String contactUrl;
 
-    /**
-     * the swagger ui contact mail.
-     */
-    @Value("${swagger.contact.mail}")
-    private String contactMail;
+	/**
+	 * the swagger ui contact mail.
+	 */
+	@Value("${swagger.contact.mail}")
+	private String contactMail;
 
-    /**
-     * the swagger ui license name.
-     */
-    @Value("${swagger.license.name}")
-    private String licenseName;
+	/**
+	 * the swagger ui license name.
+	 */
+	@Value("${swagger.license.name}")
+	private String licenseName;
 
-    /**
-     * the swagger ui license url.
-     */
-    @Value("${swagger.license.url}")
-    private String licenseUrl;
+	/**
+	 * the swagger ui license url.
+	 */
+	@Value("${swagger.license.url}")
+	private String licenseUrl;
 
-    /**
-     * the swagger api version.
-     */
-    @Value("${swagger.version}")
-    private String version;
+	/**
+	 * the swagger api version.
+	 */
+	@Value("${swagger.version}")
+	private String version;
 
-    /**
-     * create and configure the api endpoints information.
-     *
-     * @return api endpoint information
-     */
+	/**
+	 * create and configure the api endpoints information.
+	 *
+	 * @return api endpoint information
+	 */
 	@Bean
 	public OpenAPI anmanOpenAPI() {
 		Contact contact = new Contact();
