@@ -57,6 +57,9 @@
 
         <swagger.version>3.0.0</swagger.version>
 
+        <!-- fix log4j vulnerability -->
+        <log4j2.version>2.16.0</log4j2.version>
+
         <!-- Sonar properties-->
         <!-- <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
