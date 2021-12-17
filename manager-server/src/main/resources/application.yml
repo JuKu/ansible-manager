@@ -65,6 +65,9 @@ swagger:
   license.url: "http://www.apache.org/licenses/"
   version: 1.0.0
 
+# swagger-ui custom path
+springdoc.swagger-ui.path=/swagger-ui.html
+
 initial:
   import:
     enabled: true
