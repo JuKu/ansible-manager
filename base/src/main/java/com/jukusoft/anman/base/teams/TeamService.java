@@ -130,6 +130,8 @@ public class TeamService {
 		TeamEntity teamEntity = teamDAO.findOneById(teamID).orElseThrow();
 
 		teamEntity.addMember(userEntity);
+
+		cleanTeamMemberCache(userID, teamID);
 	}
 
 	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
