@@ -1,12 +1,14 @@
 package com.jukusoft.anman.base.entity.general;
 
 import com.jukusoft.anman.base.entity.user.UserEntity;
+import com.jukusoft.anman.base.entity.user.UserPreferencesEntity;
 import com.jukusoft.anman.base.teams.TeamEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,6 +113,13 @@ public class CustomerEntity extends AbstractEntity {
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+
+	@PrePersist
+	public final void prePersist1() {
+		if (this.teams == null) {
+			this.teams = new ArrayList<>();
+		}
 	}
 
 }

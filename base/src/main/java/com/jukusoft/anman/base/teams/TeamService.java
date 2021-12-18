@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +49,7 @@ public class TeamService {
 	 * @param name        the name of the team
 	 * @param description the description of the team
 	 */
+	@Transactional
 	public long addTeam(CustomerEntity customer, String name, String description) {
 		TeamEntity team = new TeamEntity(customer, name, description);
 		cleanTeamMemberCacheByCustomer(customer.getId());
@@ -56,6 +58,7 @@ public class TeamService {
 	}
 
 	@CacheEvict(cacheNames = "team_dto", key = "'team_dto_'.concat(#teamID)")
+	@Transactional
 	public void deleteTeam(CustomerEntity customer, long teamID, boolean checkForCustomer) {
 		//first, check if the team belongs to this customer, so the user can delete it
 		if (checkForCustomer) {

@@ -27,7 +27,6 @@ public class TeamEntity extends AbstractEntity {
 
 	@ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", nullable = false, updatable = false)//don't use an extra table, use join column instead
-	@NotEmpty(message = "customer cannot be null")
 	private CustomerEntity customer;
 
 	/**
@@ -63,6 +62,13 @@ public class TeamEntity extends AbstractEntity {
 		this.customer = customer;
 		this.name = name;
 		this.description = description;
+	}
+
+	/**
+	 * private constructor, required by spring jpa.
+	 */
+	private TeamEntity() {
+		//
 	}
 
 	public CustomerEntity getCustomer() {
