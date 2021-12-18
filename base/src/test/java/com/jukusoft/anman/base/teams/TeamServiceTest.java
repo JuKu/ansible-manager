@@ -18,22 +18,22 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 /**
  * Test the TeamService.
  *
  * @author Justin Kuenzel
  */
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 public class TeamServiceTest extends DBTest {
 
 	@Test
+	@Transactional
 	public void testAddTeam() throws Exception {
 		assertEquals(0, teamDAO.count());
-
-		UserHelperService userHelperService = new UserHelperService(userDAO);
 
 		//first, import the default customer
 		importDefaultCustomer();
@@ -48,7 +48,7 @@ public class TeamServiceTest extends DBTest {
 		assertEquals(0, teamDAO.count());
 
 		//add the new team
-		TeamService teamService = new TeamService(customerDAO, teamDAO, userHelperService);
+		TeamService teamService = createTeamService();
 		long teamID = teamService.addTeam(customer, "new-team-title", "new-team-description");
 		assertTrue(teamID > 0);
 
@@ -56,7 +56,7 @@ public class TeamServiceTest extends DBTest {
 		assertEquals(1, teamDAO.count());
 
 		//check customer
-		assertEquals(1, teamDAO.findOneByName("new-team-title").get().getCustomer().getId());
+		assertEquals(getDefaultCustomer().getId(), teamDAO.findOneByName("new-team-title").get().getCustomer().getId());
 
 		//synchronize database
 		flushDB();
@@ -72,6 +72,60 @@ public class TeamServiceTest extends DBTest {
 
 		//cleanup
 		cleanUp();
+	}
+
+	@Test
+	@Transactional
+	public void testListAllTeamsOfNotExistentCustomer() {
+		assertThrows(IllegalStateException.class, () -> createTeamService().listAllTeamsOfCustomer(-1));
+	}
+
+	@Test
+	@Transactional
+	public void testIfUserIsMemberOfTeam() throws Exception {
+		//first, create customer and user
+		importDefaultCustomer();
+
+		//check, that admin user was created
+		assertEquals(1, userDAO.count());
+		assertEquals("admin", userDAO.findAll().get(0).getUsername());
+		assertTrue(userDAO.findOneByUsername("admin").isPresent());
+
+		TeamService teamService = createTeamService();
+		flushDB();
+
+		//first, check not existent users and teams
+		assertFalse(teamService.checkIfUserIsMemberOfTeam(-1l, 10l));
+		assertFalse(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), -1l));
+
+		//create a team
+		long createdTeamID = createTeam("test", "test1");
+		assertFalse(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), createdTeamID));
+
+		flushDB();
+
+		//add user as member of team
+		teamService.addUserAsMemberOfTeam(getDefaultUser().getId(), createdTeamID);
+		flushDB();
+
+		assertTrue(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), createdTeamID));
+
+		//cleanup
+		cleanUp();
+	}
+
+	protected TeamService createTeamService() {
+		UserHelperService userHelperService = new UserHelperService(userDAO);
+		return new TeamService(customerDAO, teamDAO, userHelperService);
+	}
+
+	protected long createTeam(String title, String description) {
+		//get the default customer
+		CustomerEntity customer = customerDAO.findOneByName("super-admin").orElseThrow();
+
+		//add the new team
+		TeamService teamService = createTeamService();
+		return teamService.addTeam(customer, title, description);
 	}
 
 }

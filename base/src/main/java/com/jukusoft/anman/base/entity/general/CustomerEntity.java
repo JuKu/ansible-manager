@@ -75,7 +75,7 @@ public class CustomerEntity extends AbstractEntity {
 	/**
 	 * default constructor.
 	 */
-	private CustomerEntity() {
+	protected CustomerEntity() {
 		//
 	}
 

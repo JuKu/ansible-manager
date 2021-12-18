@@ -124,6 +124,15 @@ public class TeamService {
 	}
 
 	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
+	@Transactional
+	public void addUserAsMemberOfTeam(long userID, long teamID) {
+		UserEntity userEntity = userHelperService.getUserById(userID).orElseThrow();
+		TeamEntity teamEntity = teamDAO.findOneById(teamID).orElseThrow();
+
+		teamEntity.addMember(userEntity);
+	}
+
+	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
 	public void cleanTeamMemberCache(long userID, long teamID) {
 		//
 	}

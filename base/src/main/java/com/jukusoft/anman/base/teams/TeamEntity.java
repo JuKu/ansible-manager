@@ -8,6 +8,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,6 +86,17 @@ public class TeamEntity extends AbstractEntity {
 
 	public List<UserEntity> getMembers() {
 		return members;
+	}
+
+	public void addMember(UserEntity user) {
+		this.members.add(user);
+	}
+
+	@PrePersist
+	public final void prePersist1() {
+		if (this.members == null) {
+			this.members = new ArrayList<>();
+		}
 	}
 
 }

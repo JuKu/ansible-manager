@@ -2,6 +2,8 @@ package com.jukusoft.anman.base.utils;
 
 import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
+import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.importer.UserCreationImporter;
 import com.jukusoft.anman.base.teams.TeamDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +55,24 @@ public class DBTest {
 		//first, import the default customer
 		UserCreationImporter userCreationImporter = new UserCreationImporter(customerDAO, userDAO, new PasswordService(new BCryptPasswordEncoder()));
 		userCreationImporter.afterPropertiesSet();
+
+		flushDB();
+	}
+
+	protected CustomerEntity getDefaultCustomer() {
+		return customerDAO.findOneByName("super-admin").orElseThrow();
+	}
+
+	protected UserEntity getDefaultUser() {
+		return userDAO.findOneByUsername("admin").orElseThrow();
 	}
 
 	protected void cleanUp() {
+		flushDB();
+
 		customerDAO.deleteAll();
-		userDAO.deleteAll();
 		teamDAO.deleteAll();
+		userDAO.deleteAll();
 	}
 
 }
