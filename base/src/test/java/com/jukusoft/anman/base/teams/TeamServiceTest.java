@@ -28,11 +28,11 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
  * @author Justin Kuenzel
  */
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
-public class TeamServiceTest extends DBTest {
+class TeamServiceTest extends DBTest {
 
 	@Test
 	@Transactional
-	public void testAddTeam() throws Exception {
+	void testAddTeam() throws Exception {
 		assertEquals(0, teamDAO.count());
 
 		//first, import the default customer
@@ -76,13 +76,13 @@ public class TeamServiceTest extends DBTest {
 
 	@Test
 	@Transactional
-	public void testListAllTeamsOfNotExistentCustomer() {
+	void testListAllTeamsOfNotExistentCustomer() {
 		assertThrows(IllegalStateException.class, () -> createTeamService().listAllTeamsOfCustomer(-1));
 	}
 
 	@Test
 	@Transactional
-	public void testIfUserIsMemberOfTeam() throws Exception {
+	void testIfUserIsMemberOfTeam() throws Exception {
 		//first, create customer and user
 		importDefaultCustomer();
 
