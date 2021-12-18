@@ -26,7 +26,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 })
 @ActiveProfiles({"test"})
 @DirtiesContext(classMode = AFTER_CLASS)
-public class DBTest {
+public abstract class DBTest {
 
 	@Autowired
 	protected CustomerDAO customerDAO;
