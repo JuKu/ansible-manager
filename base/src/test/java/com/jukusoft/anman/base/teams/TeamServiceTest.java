@@ -116,7 +116,7 @@ class TeamServiceTest extends DBTest {
 
 	protected TeamService createTeamService() {
 		UserHelperService userHelperService = new UserHelperService(userDAO);
-		return new TeamService(customerDAO, teamDAO, userHelperService);
+		return new TeamService(customerDAO, userDAO, teamDAO, userHelperService);
 	}
 
 	protected long createTeam(String title, String description) {

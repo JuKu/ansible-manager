@@ -1,15 +1,18 @@
 package com.jukusoft.anman.base.teams;
 
 import com.jukusoft.anman.base.dao.CustomerDAO;
+import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.utils.UserHelperService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ import java.util.Optional;
 public class TeamService {
 
 	private final CustomerDAO customerDAO;
+
+	private final UserDAO userDAO;
 
 	/**
 	 * the team data access object (repository).
@@ -36,8 +41,9 @@ public class TeamService {
 	 * @param teamDAO           team data access object (repository)
 	 * @param userHelperService user helper service, e.q. to get the user entity from the userID
 	 */
-	public TeamService(@Autowired CustomerDAO customerDAO, @Autowired TeamDAO teamDAO, @Autowired UserHelperService userHelperService) {
+	public TeamService(@Autowired CustomerDAO customerDAO, @Autowired UserDAO userDAO, @Autowired TeamDAO teamDAO, @Autowired UserHelperService userHelperService) {
 		this.customerDAO = customerDAO;
+		this.userDAO = userDAO;
 		this.teamDAO = teamDAO;
 		this.userHelperService = userHelperService;
 	}
@@ -132,11 +138,16 @@ public class TeamService {
 		teamEntity.addMember(userEntity);
 
 		cleanTeamMemberCache(userID, teamID);
+		cleanTeamsOfUserCache(userID);
 	}
 
-	public List<TeamDTO> listTeamsOfUser() {
-		//TODO: add code here
-		throw new UnsupportedOperationException("method is not implemented yet.");
+	@Cacheable(cacheNames = "teams_of_user", key = "'teams_of_user_'.concat(#userID)")
+	public List<TeamDTO> listTeamsOfUser(long userID) {
+		UserEntity user = userDAO.findById(userID).orElseThrow(() -> new IllegalArgumentException("user with id '" + userID + "' does not exists"));
+
+		return user.getTeams().stream()
+				.map(this::mapTeamEntityToDTO)
+				.toList();
 	}
 
 	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
@@ -146,6 +157,11 @@ public class TeamService {
 
 	@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customerID)")
 	public void cleanTeamMemberCacheByCustomer(long customerID) {
+		//
+	}
+
+	@CacheEvict(cacheNames = "teams_of_user", key = "'teams_of_user_'.concat(#userID)")
+	public void cleanTeamsOfUserCache(long userID) {
 		//
 	}
 

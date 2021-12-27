@@ -136,7 +136,11 @@ public class UserEntity extends AbstractEntity implements IAccount {
         return lastname;
     }
 
-    public UserPreferencesEntity getUserPreferences() {
+	public List<TeamEntity> getTeams() {
+		return teams;
+	}
+
+	public UserPreferencesEntity getUserPreferences() {
         if (userPreferences == null) {
             userPreferences = new UserPreferencesEntity(this);
         }
