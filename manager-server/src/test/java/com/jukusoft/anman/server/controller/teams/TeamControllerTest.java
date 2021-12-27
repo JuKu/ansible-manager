@@ -1,5 +1,6 @@
 package com.jukusoft.anman.server.controller.teams;
 
+import com.jukusoft.anman.base.teams.TeamDAO;
 import com.jukusoft.anman.base.teams.TeamDTO;
 import com.jukusoft.anman.base.teams.TeamService;
 import com.jukusoft.anman.base.utils.UserHelperService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,6 +32,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 //@WebMvcTest(TeamController.class)
 @ActiveProfiles({"test", "user-creation-importer"})
 @DirtiesContext(classMode = AFTER_CLASS)
+@Transactional
 class TeamControllerTest extends WebTest {
 
 	/*@Autowired
@@ -52,6 +55,9 @@ class TeamControllerTest extends WebTest {
 
 	@Autowired
 	private TeamController controller;
+
+	@Autowired
+	private TeamDAO teamDAO;
 
 	/**
 	 * checks the constructor (that no exception is thrown).
@@ -109,6 +115,36 @@ class TeamControllerTest extends WebTest {
 
 		//the list should be empty, because no team was created yet
 		assertThat(response.getBody()).isEmpty();
+	}
+
+	@Test
+	void testCreateTeam() {
+		//verify, that no other team exists
+		assertThat(teamDAO.count()).isEqualTo(0);
+
+		//login
+		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
+
+		TeamDTO team = new TeamDTO(0, "test-team", "test-description");
+		ResponseEntity<String> response = executeAuthenticatedRequest("/teams/create-team", HttpMethod.PUT, String.class, jwtToken, team);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+		//verify, that team was created
+		assertThat(teamDAO.count()).isEqualTo(1);
+
+		//we have to flush the entity manager in the junit tests, so all entities are fetched new from database
+		flushDB();
+
+		//user is added as owner team member, so he should see the team in his own teams list
+		assertThat(listOwnTeams(jwtToken)).isNotEmpty();
+	}
+
+	protected List<TeamDTO> listOwnTeams(String jwtToken) {
+		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-own-teams", HttpMethod.GET, List.class, jwtToken);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		return response.getBody();
 	}
 
 }

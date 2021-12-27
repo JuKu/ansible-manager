@@ -49,7 +49,7 @@ class TeamServiceTest extends DBTest {
 
 		//add the new team
 		TeamService teamService = createTeamService();
-		long teamID = teamService.addTeam(customer, "new-team-title", "new-team-description");
+		long teamID = teamService.addTeam(customer, getDefaultUser(), "new-team-title", "new-team-description");
 		assertTrue(teamID > 0);
 
 		//check, that team was created
@@ -125,7 +125,7 @@ class TeamServiceTest extends DBTest {
 
 		//add the new team
 		TeamService teamService = createTeamService();
-		return teamService.addTeam(customer, title, description);
+		return teamService.addTeam(customer, getDefaultUser(), title, description);
 	}
 
 }

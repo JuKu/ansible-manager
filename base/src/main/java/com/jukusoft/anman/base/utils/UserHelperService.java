@@ -1,6 +1,7 @@
 package com.jukusoft.anman.base.utils;
 
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.authentification.jwt.account.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,10 @@ public class UserHelperService {
 
 	public long getCurrentUserID() {
 		return getCurrentUser().getUserID();
+	}
+
+	public CustomerEntity getCurrentCustomer() {
+		return getCurrentUser().getCustomer();
 	}
 
 	public Optional<UserEntity> getUserById(long userID) {

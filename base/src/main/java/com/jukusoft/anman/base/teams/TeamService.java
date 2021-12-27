@@ -8,6 +8,7 @@ import com.jukusoft.anman.base.utils.UserHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -54,11 +55,26 @@ public class TeamService {
 	 * @param description the description of the team
 	 */
 	@Transactional
-	public long addTeam(CustomerEntity customer, String name, String description) {
+	@Caching(evict = {
+			@CacheEvict(cacheNames = "teams_of_user", key = "'teams_of_user_'.concat(#firstTeamOwner.getUserID())"),
+			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())")
+	})
+	public long addTeam(CustomerEntity customer, UserEntity firstTeamOwner, String name, String description) {
 		TeamEntity team = new TeamEntity(customer, name, description);
-		cleanTeamMemberCacheByCustomer(customer.getId());
 
-		return teamDAO.save(team).getId();
+		long teamID = teamDAO.save(team).getId();
+
+		//fetch the team entity after save from database, to get the current state
+		team = teamDAO.findOneById(teamID).orElseThrow();
+
+		//every team required at least one team member - so we add a user to this team
+		team.addMember(firstTeamOwner);
+		teamDAO.save(team);
+
+		cleanTeamMemberCacheByCustomer(customer.getId());
+		cleanTeamsOfUserCache(firstTeamOwner.getUserID());
+
+		return teamID;
 	}
 
 	@CacheEvict(cacheNames = "team_dto", key = "'team_dto_'.concat(#teamID)")
@@ -134,6 +150,7 @@ public class TeamService {
 		TeamEntity teamEntity = teamDAO.findOneById(teamID).orElseThrow();
 
 		teamEntity.addMember(userEntity);
+		teamDAO.save(teamEntity);
 
 		cleanTeamMemberCache(userID, teamID);
 		cleanTeamsOfUserCache(userID);

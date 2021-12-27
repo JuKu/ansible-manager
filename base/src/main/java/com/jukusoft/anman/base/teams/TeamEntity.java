@@ -49,7 +49,11 @@ public class TeamEntity extends AbstractEntity {
 	/**
 	 * a list of all team members.
 	 */
-	@ManyToMany(/*mappedBy = "id", */cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToMany(/*mappedBy = "teams",*/ cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "team_members",
+			joinColumns = @JoinColumn(name = "team_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<UserEntity> members;
 
 	/**

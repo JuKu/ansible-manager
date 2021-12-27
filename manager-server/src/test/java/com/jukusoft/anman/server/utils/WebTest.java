@@ -3,6 +3,8 @@ package com.jukusoft.anman.server.utils;
 import com.jukusoft.authentification.jwt.AuthentificationRequest;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -11,6 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -24,11 +28,16 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
  *
  * @author Justin Kuenzel
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+		"spring.test.database.replace=NONE",
+		"spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1"
+})
 @ActiveProfiles({"test"})
 @DirtiesContext(classMode = AFTER_CLASS)
 @TestPropertySource(properties = {
 		"auth.providers=local-database",
+		"spring.test.database.replace=NONE",
+		"spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1",
 })
 public abstract class WebTest {
 
@@ -37,6 +46,9 @@ public abstract class WebTest {
 
 	@Autowired
 	protected TestRestTemplate restTemplate;
+
+	@PersistenceContext
+	protected EntityManager em;
 
 	/**
 	 * this method checks, if a specific endpoint url returns the correct http status code.
@@ -128,6 +140,17 @@ public abstract class WebTest {
 		}
 
 		return Optional.of(response.getBody());
+	}
+
+	protected void flushDB() {
+		//see also: https://josefczech.cz/2020/02/02/datajpatest-testentitymanager-flush-clear/
+
+		// forces synchronization to DB
+		em.flush();
+
+		// clears persistence context
+		// all entities are now detached and can be fetched again
+		em.clear();
 	}
 
 }

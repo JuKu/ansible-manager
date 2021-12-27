@@ -63,11 +63,10 @@ public class TeamController {
 	public ResponseEntity<String> createTeam(@RequestBody TeamDTO team) {
 		//TODO: check permissions
 
-		//TODO: get customer of current user
-		CustomerEntity customer = null;
+		CustomerEntity customer = userHelperService.getCurrentCustomer();
 
 		//create teams
-		long createdTeamID = teamService.addTeam(customer, team.title(), team.description());
+		long createdTeamID = teamService.addTeam(customer, userHelperService.getCurrentUser(), team.title(), team.description());
 
 		if (createdTeamID < 0) {
 			//the team could not be created
