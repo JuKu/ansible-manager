@@ -93,6 +93,25 @@ public abstract class WebTest {
 	 *
 	 * @return optional JWT token string
 	 */
+	protected Optional<String> loginGetJWTToken(String username, String password, boolean checkLogin) {
+		Optional<String> jwtToken = login(username, password, checkLogin);
+
+		if (jwtToken.isEmpty()) {
+			return Optional.empty();
+		}
+
+		JSONObject json = new JSONObject(jwtToken.get());
+		return Optional.of(json.getString("token"));
+	}
+
+	/**
+	 * executes a login request and return the JWT token in a json string.
+	 *
+	 * @param username username
+	 * @param password password
+	 *
+	 * @return optional JWT token string
+	 */
 	protected Optional<String> login(String username, String password, boolean checkLogin) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -108,8 +127,7 @@ public abstract class WebTest {
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 
-		JSONObject json = new JSONObject(response.getBody());
-		return Optional.of(json.getString("token"));
+		return Optional.of(response.getBody());
 	}
 
 }

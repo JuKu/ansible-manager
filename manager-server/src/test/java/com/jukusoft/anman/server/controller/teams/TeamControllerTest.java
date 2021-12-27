@@ -102,7 +102,7 @@ class TeamControllerTest extends WebTest {
 
 	@Test
 	void testListOwnTeamsAsAuthenticatedUser() {
-		String jwtToken = login("admin", "admin", true).orElseThrow();
+		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
 		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-own-teams", HttpMethod.GET, List.class, jwtToken);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
