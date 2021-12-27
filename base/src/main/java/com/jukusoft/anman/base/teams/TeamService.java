@@ -134,6 +134,11 @@ public class TeamService {
 		cleanTeamMemberCache(userID, teamID);
 	}
 
+	public List<TeamDTO> listTeamsOfUser() {
+		//TODO: add code here
+		throw new UnsupportedOperationException("method is not implemented yet.");
+	}
+
 	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
 	public void cleanTeamMemberCache(long userID, long teamID) {
 		//
