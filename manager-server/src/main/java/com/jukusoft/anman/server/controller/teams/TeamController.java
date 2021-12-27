@@ -3,6 +3,7 @@ package com.jukusoft.anman.server.controller.teams;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.teams.TeamDTO;
 import com.jukusoft.anman.base.teams.TeamService;
+import com.jukusoft.anman.base.utils.UserHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,20 @@ import java.util.List;
 @RestController("/teams")
 public class TeamController {
 
-	@Autowired
-	private TeamService teamService;
+	private final TeamService teamService;
+
+	private final UserHelperService userHelperService;
+
+	/**
+	 * default constructor.
+	 *
+	 * @param teamService instance of team service to manage teams
+	 * @param userHelperService user helper service to get the current user
+	 */
+	public TeamController(TeamService teamService, UserHelperService userHelperService) {
+		this.teamService = teamService;
+		this.userHelperService = userHelperService;
+	}
 
 	/**
 	 * return a list with all teams which the user belongs to.

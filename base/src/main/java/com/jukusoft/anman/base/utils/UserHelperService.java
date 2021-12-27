@@ -47,7 +47,7 @@ public class UserHelperService {
         //find current userID
         long userID = userAccount.getUserID();
 
-        return userDAO.findById(userID).orElseThrow();
+        return getUserById(userID).orElseThrow();
     }
 
 	public Optional<UserEntity> getUserById(long userID) {
