@@ -53,7 +53,7 @@ public class TeamController {
 	public ResponseEntity<List<TeamDTO>> listAllCustomerTeams() {
 		//TODO: check permissions
 
-		return null;
+		return new ResponseEntity<>(teamService.listAllTeamsOfCustomer(userHelperService.getCurrentCustomerID()), HttpStatus.OK);
 	}
 
 	/**

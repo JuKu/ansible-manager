@@ -59,6 +59,10 @@ public class UserHelperService {
 		return getCurrentUser().getCustomer();
 	}
 
+	public long getCurrentCustomerID() {
+		return getCurrentCustomer().getId();
+	}
+
 	public Optional<UserEntity> getUserById(long userID) {
 		//TODO: add caching
 
