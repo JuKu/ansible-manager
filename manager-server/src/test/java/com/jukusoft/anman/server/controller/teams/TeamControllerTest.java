@@ -138,6 +138,9 @@ class TeamControllerTest extends WebTest {
 
 		//user is added as owner team member, so he should see the team in his own teams list
 		assertThat(listOwnTeams(jwtToken)).isNotEmpty();
+
+		//clean up
+		teamDAO.deleteAll();
 	}
 
 	protected List<TeamDTO> listOwnTeams(String jwtToken) {
