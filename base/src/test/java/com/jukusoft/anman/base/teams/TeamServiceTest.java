@@ -100,14 +100,30 @@ class TeamServiceTest extends DBTest {
 
 		//create a team
 		long createdTeamID = createTeam("test", "test1");
-		assertFalse(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), createdTeamID));
+
+		//the user should be member of this team, because the owner is always added as team member
+		assertTrue(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), createdTeamID));
 
 		flushDB();
 
-		//add user as member of team
+		//add user as duplicate member of team
 		teamService.addUserAsMemberOfTeam(getDefaultUser().getId(), createdTeamID);
 		flushDB();
 
+		assertTrue(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), createdTeamID));
+
+		//delete the user from the team
+		teamService.removeUserAsMemberOfTeam(getDefaultUser().getId(), createdTeamID);
+		flushDB();
+
+		//the user should not longer be member of this team
+		assertFalse(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), createdTeamID));
+
+		//add the user as member of this team again
+		teamService.addUserAsMemberOfTeam(getDefaultUser().getId(), createdTeamID);
+		flushDB();
+
+		//the user should be member of this team again
 		assertTrue(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), createdTeamID));
 
 		//cleanup

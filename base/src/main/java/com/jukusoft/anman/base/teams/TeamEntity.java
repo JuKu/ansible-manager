@@ -93,7 +93,16 @@ public class TeamEntity extends AbstractEntity {
 	}
 
 	public void addMember(UserEntity user) {
+		if (members.contains(user)) {
+			//don't create duplicates
+			return;
+		}
+
 		this.members.add(user);
+	}
+
+	public void removeMember(UserEntity user) {
+		this.members.remove(user);
 	}
 
 	@PrePersist

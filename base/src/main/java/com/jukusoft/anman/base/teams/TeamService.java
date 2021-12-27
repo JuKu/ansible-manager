@@ -156,6 +156,19 @@ public class TeamService {
 		cleanTeamsOfUserCache(userID);
 	}
 
+	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
+	@Transactional
+	public void removeUserAsMemberOfTeam(long userID, long teamID) {
+		UserEntity userEntity = userHelperService.getUserById(userID).orElseThrow();
+		TeamEntity teamEntity = teamDAO.findOneById(teamID).orElseThrow();
+
+		teamEntity.removeMember(userEntity);
+		teamDAO.save(teamEntity);
+
+		cleanTeamMemberCache(userID, teamID);
+		cleanTeamsOfUserCache(userID);
+	}
+
 	@Cacheable(cacheNames = "teams_of_user", key = "'teams_of_user_'.concat(#userID)")
 	public List<TeamDTO> listTeamsOfUser(long userID) {
 		UserEntity user = userDAO.findById(userID).orElseThrow(() -> new IllegalArgumentException("user with id '" + userID + "' does not exists"));
