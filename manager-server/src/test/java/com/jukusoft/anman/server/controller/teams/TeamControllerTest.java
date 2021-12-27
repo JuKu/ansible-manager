@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -27,7 +28,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 //@WebMvcTest(TeamController.class)
 @ActiveProfiles({"test"})
 @DirtiesContext(classMode = AFTER_CLASS)
-class TeamControllerTest {
+class TeamControllerTest extends WebTest {
 
 	/*@Autowired
 	private MockMvc mockMvc;*/
@@ -47,12 +48,6 @@ class TeamControllerTest {
 	@Autowired
 	private WebSecurityConfig webSecurityConfig;*/
 
-	@LocalServerPort
-	private int port;
-
-	@Autowired
-	private TestRestTemplate restTemplate;
-
 	@Autowired
 	private TeamController controller;
 
@@ -71,7 +66,7 @@ class TeamControllerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void contextLoads() throws Exception {
+	void contextLoads() throws Exception {
 		assertThat(controller).isNotNull();
 	}
 
@@ -79,7 +74,7 @@ class TeamControllerTest {
 	 * this test executes a real http request to check the API to get the list of own teams.
 	 */
 	@Test
-	public void testEndpointsAreNotAccessableWithoutLogin() throws Exception {
+	void testEndpointsAreNotAccessableWithoutLogin() throws Exception {
 		/*Mockito.when(service.listAllTeamsOfCustomer(ArgumentMatchers.anyLong())).thenReturn(null);
 
 		//perform http request, see also: https://spring.io/guides/gs/testing-web/ .
@@ -93,8 +88,14 @@ class TeamControllerTest {
 		assertThat(res).isNotNull();
 
 		//execute the same request again, but return it as ResponseEntity, so that we can check http status code.
-		ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		/*ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);*/
+
+		checkStatusCode(requestUrl, new HttpMethod[]{HttpMethod.GET}, HttpStatus.UNAUTHORIZED);
+
+		//check the other endpoints
+		checkStatusCode("/teams/list-customer-teams", new HttpMethod[]{HttpMethod.GET}, HttpStatus.UNAUTHORIZED);
+		//checkStatusCode("/teams/create-team", new HttpMethod[]{HttpMethod.PUT}, HttpStatus.UNAUTHORIZED);
 	}
 
 }

@@ -4,13 +4,9 @@ import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.teams.TeamDTO;
 import com.jukusoft.anman.base.teams.TeamService;
 import com.jukusoft.anman.base.utils.UserHelperService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,7 +25,7 @@ public class TeamController {
 	/**
 	 * default constructor.
 	 *
-	 * @param teamService instance of team service to manage teams
+	 * @param teamService       instance of team service to manage teams
 	 * @param userHelperService user helper service to get the current user
 	 */
 	public TeamController(TeamService teamService, UserHelperService userHelperService) {
@@ -65,7 +61,7 @@ public class TeamController {
 	/**
 	 * Create a new customer team.
 	 */
-	@PostMapping(path = "/teams/create-team")
+	@PutMapping(path = "/teams/create-team")
 	public ResponseEntity<String> createTeam(@RequestBody TeamDTO team) {
 		//TODO: check permissions
 
