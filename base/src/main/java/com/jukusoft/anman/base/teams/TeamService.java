@@ -5,14 +5,12 @@ import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.utils.UserHelperService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
