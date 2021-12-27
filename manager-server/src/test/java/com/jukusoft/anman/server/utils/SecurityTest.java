@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Justin Kuenzel
  */
 @ActiveProfiles({"test", "user-creation-importer"})
-public class SecurityTest extends WebTest {
+class SecurityTest extends WebTest {
 
 	@Value("${jwt.secret}")
 	private String secret;
@@ -45,8 +45,8 @@ public class SecurityTest extends WebTest {
 		assertThat(jwtToken).isNotNull();
 
 		//check, that the response is a json string
-		assertThat(jwtToken.startsWith("{")).isTrue();
-		assertThat(jwtToken.endsWith("}")).isTrue();
+		assertThat(jwtToken).startsWith("{");
+		assertThat(jwtToken).endsWith("}");
 
 		JSONObject json = new JSONObject(jwtToken);
 		assertThat(json.has("token")).isTrue();
