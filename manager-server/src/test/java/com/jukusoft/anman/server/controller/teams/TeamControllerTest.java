@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +28,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@WebMvcTest(TeamController.class)
-@ActiveProfiles({"test"})
+@ActiveProfiles({"test", "user-creation-importer"})
 @DirtiesContext(classMode = AFTER_CLASS)
 class TeamControllerTest extends WebTest {
 
@@ -95,6 +98,17 @@ class TeamControllerTest extends WebTest {
 		//check the other endpoints
 		checkStatusCode("/teams/list-customer-teams", new HttpMethod[]{HttpMethod.GET}, HttpStatus.UNAUTHORIZED);
 		checkStatusCode("/teams/create-team", new HttpMethod[]{HttpMethod.PUT}, HttpStatus.UNAUTHORIZED, new TeamDTO(0, null, null));
+	}
+
+	@Test
+	void testListOwnTeamsAsAuthenticatedUser() {
+		String jwtToken = login("admin", "admin", true).orElseThrow();
+		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-own-teams", HttpMethod.GET, List.class, jwtToken);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		//the list should be empty, because no team was created yet
+		assertThat(response.getBody()).isEmpty();
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.jukusoft.anman.server.utils;
 
 import com.jukusoft.authentification.jwt.AuthentificationRequest;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -46,11 +47,32 @@ public abstract class WebTest {
 	 * @param expectedStatusCode the expected http status code
 	 */
 	protected void checkStatusCode(String url, HttpMethod[] methods, HttpStatus expectedStatusCode, Object... urlVariables) {
+		HttpEntity<?> entity = createHttpEntity(null, urlVariables);
+
+		for (HttpMethod method : methods) {
+			ResponseEntity<String> response = restTemplate.exchange(url, method, entity, String.class, urlVariables);
+
+			//execute the checks
+			assertThat(response.getStatusCode()).isEqualTo(expectedStatusCode);
+		}
+	}
+
+	protected <T> ResponseEntity<T> executeAuthenticatedRequest(String url, HttpMethod method, Class<T> resClass, String jwtToken, Object... urlVariables) {
+		HttpEntity<?> entity = createHttpEntity(jwtToken, urlVariables);
+		return restTemplate.exchange(url, method, entity, resClass, urlVariables);
+	}
+
+	private HttpEntity createHttpEntity(String jwtToken, Object... urlVariables) {
 		//create the required HttpEntity
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.set("X-COM-PERSIST", "NO");
 		headers.set("X-COM-LOCATION", "USA");
+
+		if (jwtToken != null) {
+			headers.set("Authorization", "Bearer " + jwtToken);
+		}
+
 		HttpEntity<?> entity = null;
 
 		//create the HttpEntity with or without parameters
@@ -60,12 +82,7 @@ public abstract class WebTest {
 			entity = new HttpEntity<>(headers);
 		}
 
-		for (HttpMethod method : methods) {
-			ResponseEntity<String> response = restTemplate.exchange(url, method, entity, String.class, urlVariables);
-
-			//execute the checks
-			assertThat(response.getStatusCode()).isEqualTo(expectedStatusCode);
-		}
+		return entity;
 	}
 
 	/**
@@ -91,7 +108,8 @@ public abstract class WebTest {
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 
-		return Optional.of(response.getBody());
+		JSONObject json = new JSONObject(response.getBody());
+		return Optional.of(json.getString("token"));
 	}
 
 }
