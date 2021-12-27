@@ -40,9 +40,7 @@ public class TeamController {
 	 */
 	@GetMapping(path = "/teams/list-own-teams")
 	public ResponseEntity<List<TeamDTO>> listOwnTeams() {
-		//TODO: check permissions
-
-		return null;
+		return new ResponseEntity<>(teamService.listTeamsOfUser(userHelperService.getCurrentUserID()), HttpStatus.OK);
 	}
 
 	/**
