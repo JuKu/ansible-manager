@@ -1,16 +1,15 @@
 package com.jukusoft.anman.server.controller.teams;
 
+import com.jukusoft.anman.base.teams.TeamDTO;
 import com.jukusoft.anman.base.teams.TeamService;
 import com.jukusoft.anman.base.utils.UserHelperService;
+import com.jukusoft.anman.server.utils.WebTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -95,7 +94,7 @@ class TeamControllerTest extends WebTest {
 
 		//check the other endpoints
 		checkStatusCode("/teams/list-customer-teams", new HttpMethod[]{HttpMethod.GET}, HttpStatus.UNAUTHORIZED);
-		//checkStatusCode("/teams/create-team", new HttpMethod[]{HttpMethod.PUT}, HttpStatus.UNAUTHORIZED);
+		checkStatusCode("/teams/create-team", new HttpMethod[]{HttpMethod.PUT}, HttpStatus.UNAUTHORIZED, new TeamDTO(0, null, null));
 	}
 
 }

@@ -53,6 +53,14 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.3</version>
         </dependency>
+
+        <!-- see also: https://newbedev.com/getting-java-net-httpretryexception-cannot-retry-due-to-server-authentication-in-streaming-mode -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Profile;
  * @author Justin Kuenzel
  */
 @Configuration
-@Profile("default")
+@Profile({"default", "user-creation-importer"})
 public class UserCreationImporter implements InitializingBean {
 
 	/**
