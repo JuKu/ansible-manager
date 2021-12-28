@@ -9,7 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This entity represents a single team.
@@ -54,7 +56,7 @@ public class TeamEntity extends AbstractEntity {
 			name = "team_members",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "user_id"))
-	private List<UserEntity> members;
+	private Set<UserEntity> members = new HashSet<>();
 
 	/**
 	 * default constructor.
@@ -89,7 +91,7 @@ public class TeamEntity extends AbstractEntity {
 	}
 
 	public List<UserEntity> getMembers() {
-		return members;
+		return members.stream().toList();
 	}
 
 	public void addMember(UserEntity user) {
@@ -108,7 +110,7 @@ public class TeamEntity extends AbstractEntity {
 	@PrePersist
 	public final void prePersist1() {
 		if (this.members == null) {
-			this.members = new ArrayList<>();
+			this.members = new HashSet<>();
 		}
 	}
 

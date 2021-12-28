@@ -75,7 +75,7 @@ class UserCreationImporterTest {
 		UserDAO userDAO1 = Mockito.mock(UserDAO.class);
 
 		//return same UserEntity object without store them in database, so id will not be changed
-		when(userDAO1.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(userDAO1.save(any(UserEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		UserCreationImporter importer1 = new UserCreationImporter(customerDAO, userDAO1, passwordService);
 		assertThrows(IllegalStateException.class, () -> importer1.afterPropertiesSet());

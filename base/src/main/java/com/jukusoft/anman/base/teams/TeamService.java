@@ -218,6 +218,15 @@ public class TeamService {
 		LOGGER.debug("clean teams of user cache: {}", userID);
 	}
 
+	@Caching(evict = {
+			@CacheEvict(cacheNames = "team_member_state", allEntries = true),
+			@CacheEvict(cacheNames = "team_list_by_customer", allEntries = true),
+			@CacheEvict(cacheNames = "teams_of_user", allEntries = true)
+	})
+	public void cleanAllCaches() {
+		LOGGER.info("Clean all TeamService caches");
+	}
+
 	protected Optional<TeamEntity> getTeamEntityById(long teamID) {
 		return teamDAO.findOneById(teamID);
 	}

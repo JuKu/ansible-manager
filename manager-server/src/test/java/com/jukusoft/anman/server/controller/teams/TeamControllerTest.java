@@ -1,5 +1,7 @@
 package com.jukusoft.anman.server.controller.teams;
 
+import com.jukusoft.anman.base.dao.CustomerDAO;
+import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.teams.TeamDAO;
 import com.jukusoft.anman.base.teams.TeamDTO;
 import com.jukusoft.anman.base.teams.TeamService;
@@ -60,6 +62,15 @@ class TeamControllerTest extends WebTest {
 	@Autowired
 	private TeamDAO teamDAO;
 
+	@Autowired
+	protected CustomerDAO customerDAO;
+
+	@Autowired
+	private UserDAO userDAO;
+
+	@Autowired
+	private TeamService teamService;
+
 	/**
 	 * checks the constructor (that no exception is thrown).
 	 */
@@ -115,6 +126,11 @@ class TeamControllerTest extends WebTest {
 
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isEqualTo(0);
+		assertThat(userDAO.count()).isEqualTo(1);
+		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isEqualTo(0);
+
+		//TODO: check why this method call fixes the cache problem
+		assertThat(teamService.listTeamsOfUser(userDAO.findAll().stream().findFirst().get().getUserID()).size()).isEqualTo(0);
 
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
 		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-own-teams", HttpMethod.GET, List.class, jwtToken);
@@ -131,6 +147,8 @@ class TeamControllerTest extends WebTest {
 
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isEqualTo(0);
+		assertThat(userDAO.count()).isEqualTo(1);
+		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isEqualTo(0);
 
 		//login
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
@@ -157,6 +175,8 @@ class TeamControllerTest extends WebTest {
 	void testListAllCustomerTeams() {
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isEqualTo(0);
+		assertThat(userDAO.count()).isEqualTo(1);
+		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isEqualTo(0);
 
 		//login
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();

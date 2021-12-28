@@ -1,5 +1,6 @@
 package com.jukusoft.anman.server.utils;
 
+import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.authentification.jwt.AuthentificationRequest;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
