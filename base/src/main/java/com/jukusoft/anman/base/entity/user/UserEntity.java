@@ -144,6 +144,14 @@ public class UserEntity extends AbstractEntity implements IAccount {
 		return teams;
 	}
 
+	public void addTeam(TeamEntity team) {
+		this.teams.add(team);
+	}
+
+	public void removeTeam(TeamEntity team) {
+		this.teams.remove(team);
+	}
+
 	public UserPreferencesEntity getUserPreferences() {
         if (userPreferences == null) {
             userPreferences = new UserPreferencesEntity(this);

@@ -107,7 +107,11 @@ public class TeamService {
 		for (UserEntity member : team.getMembers()) {
 			cleanTeamsOfUserCache(member.getUserID());
 			cleanTeamMemberCache(member.getUserID(), teamID);
+
+			//TODO: this is a quick & dirty fix. Fix the caching instead.
 			userDAO.refresh(member);
+			member.removeTeam(team);
+			userDAO.save(member);
 		}
 
 		//clear cache

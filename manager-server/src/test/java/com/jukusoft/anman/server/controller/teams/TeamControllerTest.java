@@ -108,6 +108,7 @@ class TeamControllerTest extends WebTest {
 	}
 
 	@Test
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 	void testListOwnTeamsAsAuthenticatedUser() {
 		teamDAO.deleteAll();
 		flushDB();
