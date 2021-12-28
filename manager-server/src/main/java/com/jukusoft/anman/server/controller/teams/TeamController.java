@@ -84,7 +84,7 @@ public class TeamController {
 	 * @return a response entity with the HTTP status code
 	 */
 	@DeleteMapping(path = "/teams/delete-team/{teamID}")
-	public ResponseEntity<String> deleteTeam(@RequestParam("teamID") long teamID) {
+	public ResponseEntity<String> deleteTeam(@PathVariable(name = "teamID") long teamID) {
 		//TODO: check permissions
 
 		teamService.deleteTeam(userHelperService.getCurrentCustomer(), teamID, true);

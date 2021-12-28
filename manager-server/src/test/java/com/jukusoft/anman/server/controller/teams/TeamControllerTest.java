@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -108,6 +109,12 @@ class TeamControllerTest extends WebTest {
 
 	@Test
 	void testListOwnTeamsAsAuthenticatedUser() {
+		teamDAO.deleteAll();
+		flushDB();
+
+		//verify, that no other team exists
+		assertThat(teamDAO.count()).isEqualTo(0);
+
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
 		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-own-teams", HttpMethod.GET, List.class, jwtToken);
 
@@ -119,6 +126,8 @@ class TeamControllerTest extends WebTest {
 
 	@Test
 	void testCreateTeam() {
+		teamDAO.deleteAll();
+
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isEqualTo(0);
 
@@ -143,8 +152,45 @@ class TeamControllerTest extends WebTest {
 		teamDAO.deleteAll();
 	}
 
+	@Test
+	void testListAllCustomerTeams() {
+		//verify, that no other team exists
+		assertThat(teamDAO.count()).isEqualTo(0);
+
+		//login
+		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
+		List<Map<String, String>> customerTeams = listCustomerTeams(jwtToken);
+		assertThat(customerTeams).isEmpty();
+
+		//create customer team
+		TeamDTO team = new TeamDTO(0, "test-team11", "test-description1");
+		ResponseEntity<String> response = executeAuthenticatedRequest("/teams/create-team", HttpMethod.PUT, String.class, jwtToken, team);
+		flushDB();
+
+		//check customer teams again
+		customerTeams = listCustomerTeams(jwtToken);
+		assertThat(customerTeams).isNotEmpty();
+		assertThat(customerTeams.size()).isEqualTo(1);
+		assertThat(customerTeams.get(0).get("title")).isEqualTo("test-team11");
+
+		//TODO: add check that teams from other customers are hidden
+
+		//clean up
+		teamDAO.deleteAll();
+		flushDB();
+
+		assertThat(teamDAO.count()).isEqualTo(0);
+	}
+
 	protected List<TeamDTO> listOwnTeams(String jwtToken) {
 		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-own-teams", HttpMethod.GET, List.class, jwtToken);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		return response.getBody();
+	}
+
+	protected List<Map<String, String>> listCustomerTeams(String jwtToken) {
+		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-customer-teams", HttpMethod.GET, List.class, jwtToken);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		return response.getBody();

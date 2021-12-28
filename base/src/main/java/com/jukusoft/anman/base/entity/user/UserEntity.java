@@ -81,7 +81,7 @@ public class UserEntity extends AbstractEntity implements IAccount {
 	/**
 	 * a list of all teams, the user belongs to.
 	 */
-	@ManyToMany(mappedBy = "members", cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "members", cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH}, fetch = FetchType.LAZY)
 	private List<TeamEntity> teams;
 
     public UserEntity(CustomerEntity customer, @Size(min = 2, max = 45) @NotEmpty(message = "username is required") String username, String prename, String lastname) {

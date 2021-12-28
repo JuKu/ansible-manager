@@ -1,5 +1,6 @@
 package com.jukusoft.anman.worker;
 
+import com.jukusoft.anman.base.dao.RefreshDAOImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -23,7 +24,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @EnableScheduling
 @EntityScan({"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
-@EnableJpaRepositories({"com.jukusoft.anman", "com.jukusoft.authentification.jwt"})
+@EnableJpaRepositories(value = {"com.jukusoft.anman", "com.jukusoft.authentification.jwt"}, repositoryBaseClass = RefreshDAOImpl.class)
 public class WorkerNodeApplication {
 
     /**

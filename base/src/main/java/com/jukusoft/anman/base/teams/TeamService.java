@@ -5,10 +5,13 @@ import com.jukusoft.anman.base.dao.UserDAO;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.utils.UserHelperService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,6 +25,8 @@ import java.util.Optional;
  */
 @Service
 public class TeamService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TeamService.class);
 
 	private final CustomerDAO customerDAO;
 
@@ -60,6 +65,8 @@ public class TeamService {
 			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())")
 	})
 	public long addTeam(CustomerEntity customer, UserEntity firstTeamOwner, String name, String description) {
+		LOGGER.info("create a new team with name: '{}' (customer: {}, creator user: {})", name, customer.getId(), firstTeamOwner.getUserID());
+
 		TeamEntity team = new TeamEntity(customer, name, description);
 
 		long teamID = teamDAO.save(team).getId();
@@ -77,25 +84,38 @@ public class TeamService {
 		return teamID;
 	}
 
-	@CacheEvict(cacheNames = "team_dto", key = "'team_dto_'.concat(#teamID)")
+	@Caching(evict = {
+			@CacheEvict(cacheNames = "team_dto", key = "'team_dto_'.concat(#teamID)"),
+			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())")
+	})
 	@Transactional
+	@Modifying(flushAutomatically = true, clearAutomatically = true)
 	public void deleteTeam(CustomerEntity customer, long teamID, boolean checkForCustomer) {
+		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
+
 		//first, check if the team belongs to this customer, so the user can delete it
 		if (checkForCustomer) {
-			TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
-
 			if (team.getCustomer().getId() != customer.getId()) {
 				throw new IllegalStateException("this team (id: " + teamID + ") does not belong to customer '" + customer.getName() + "', so it cannot be deleted.");
 			}
 		}
 
 		teamDAO.deleteById(teamID);
+		teamDAO.refresh(team);
+
+		//clear cache of users which are members of this team
+		for (UserEntity member : team.getMembers()) {
+			cleanTeamsOfUserCache(member.getUserID());
+			cleanTeamMemberCache(member.getUserID(), teamID);
+			userDAO.refresh(member);
+		}
 
 		//clear cache
 		this.cleanTeamMemberCacheByCustomer(customer.getId());
 	}
 
 	@Cacheable(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customerID)")
+	@Transactional
 	public List<TeamDTO> listAllTeamsOfCustomer(long customerID) {
 		Optional<CustomerEntity> customerOpt = customerDAO.findById(customerID);
 
@@ -170,6 +190,7 @@ public class TeamService {
 	}
 
 	@Cacheable(cacheNames = "teams_of_user", key = "'teams_of_user_'.concat(#userID)")
+	@Transactional
 	public List<TeamDTO> listTeamsOfUser(long userID) {
 		UserEntity user = userDAO.findById(userID).orElseThrow(() -> new IllegalArgumentException("user with id '" + userID + "' does not exists"));
 
@@ -180,17 +201,17 @@ public class TeamService {
 
 	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
 	public void cleanTeamMemberCache(long userID, long teamID) {
-		//
+		LOGGER.debug("clean team member cache for user: {} and team: {}", userID, teamID);
 	}
 
 	@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customerID)")
 	public void cleanTeamMemberCacheByCustomer(long customerID) {
-		//
+		LOGGER.debug("clean team member cache by customer: {}", customerID);
 	}
 
 	@CacheEvict(cacheNames = "teams_of_user", key = "'teams_of_user_'.concat(#userID)")
 	public void cleanTeamsOfUserCache(long userID) {
-		//
+		LOGGER.debug("clean teams of user cache: {}", userID);
 	}
 
 	protected Optional<TeamEntity> getTeamEntityById(long teamID) {
