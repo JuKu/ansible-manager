@@ -76,4 +76,20 @@ public class TeamController {
 		return new ResponseEntity<>(Long.toString(createdTeamID), HttpStatus.CREATED);
 	}
 
+	/**
+	 * delete a customer team.
+	 *
+	 * @param teamID the team id
+	 *
+	 * @return a response entity with the HTTP status code
+	 */
+	@DeleteMapping(path = "/teams/delete-team")
+	public ResponseEntity<String> deleteTeam(long teamID) {
+		//TODO: check permissions
+
+		teamService.deleteTeam(userHelperService.getCurrentCustomer(), teamID, true);
+
+		return new ResponseEntity<>("success", HttpStatus.OK);
+	}
+
 }
