@@ -174,7 +174,7 @@ public class TeamService {
 	}
 
 	protected TeamDetailsDTO mapTeamEntityToDetailsDTO(TeamEntity team) {
-		List<String> memberList = team.getMembers().stream().map(member -> member.getUsername()).toList();
+		List<String> memberList = team.getMembers().stream().map(UserEntity::getUsername).toList();
 		return new TeamDetailsDTO(team.getId(), team.getName(), team.getDescription(), team.getMembers().size(), team.getCustomer().getId(), team.getCustomer().getName(), memberList);
 	}
 

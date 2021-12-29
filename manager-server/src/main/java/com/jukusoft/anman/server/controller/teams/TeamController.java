@@ -25,6 +25,8 @@ public class TeamController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TeamController.class);
 
+	private static final String SECURITY_WARNING = "Security violation - the requested team (to add team member) does not belongs to the customer";
+
 	private final TeamService teamService;
 
 	private final UserHelperService userHelperService;
@@ -107,7 +109,7 @@ public class TeamController {
 
 		//check, if the team belongs to the same customer
 		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
-			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
+			LOGGER.warn(SECURITY_WARNING);
 			return new ResponseEntity<>(new SuccessResponseDTO(false), HttpStatus.FORBIDDEN);
 		}
 
@@ -123,7 +125,7 @@ public class TeamController {
 
 		//check, if the team belongs to the same customer
 		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
-			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
+			LOGGER.warn(SECURITY_WARNING);
 			return new ResponseEntity<>(new SuccessResponseDTO(false), HttpStatus.FORBIDDEN);
 		}
 
@@ -137,7 +139,7 @@ public class TeamController {
 
 		//check, if the team belongs to the same customer
 		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
-			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
+			LOGGER.warn(SECURITY_WARNING);
 			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 		}
 
