@@ -113,6 +113,7 @@ public class TeamController {
 		return new ResponseEntity<>(new SuccessResponseDTO(true), HttpStatus.OK);
 	}
 
+	@DeleteMapping(path = "/teams/remove-member")
 	public ResponseEntity<SuccessResponseDTO> removeTeamMember(@RequestParam("teamID") long teamID, @RequestParam("memberID") long memberIDToRemove) {
 		//TODO: check permissions
 
