@@ -2,6 +2,7 @@ package com.jukusoft.anman.server.controller.teams;
 
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.teams.TeamDTO;
+import com.jukusoft.anman.base.teams.TeamDetailsDTO;
 import com.jukusoft.anman.base.teams.TeamService;
 import com.jukusoft.anman.base.utils.UserHelperService;
 import com.jukusoft.anman.server.controller.SuccessResponseDTO;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This REST controller is responsible for all teams endpoints.
@@ -127,6 +129,25 @@ public class TeamController {
 
 		teamService.removeUserAsMemberOfTeam(memberIDToRemove, teamID);
 		return new ResponseEntity<>(new SuccessResponseDTO(true), HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/teams/details/{teamID}")
+	public ResponseEntity<TeamDetailsDTO> getDetails(@PathVariable(name = "teamID") long teamID) {
+		//TODO: check permissions
+
+		//check, if the team belongs to the same customer
+		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
+			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+
+		Optional<TeamDetailsDTO> teamDetailsDTO = teamService.getTeamDetails(teamID);
+
+		if (teamDetailsDTO.isEmpty()) {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(teamDetailsDTO.get(), HttpStatus.OK);
 	}
 
 }

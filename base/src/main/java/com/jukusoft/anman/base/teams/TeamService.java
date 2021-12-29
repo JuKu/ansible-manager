@@ -164,6 +164,16 @@ public class TeamService {
 		return new TeamDTO(entity.getId(), entity.getName(), entity.getDescription());
 	}
 
+	@Cacheable(cacheNames = "team_details", key = "'team_details_'.concat(#teamID)")
+	public Optional<TeamDetailsDTO> getTeamDetails(long teamID) {
+		return teamDAO.findOneById(teamID).map(this::mapTeamEntityToDetailsDTO);
+	}
+
+	protected TeamDetailsDTO mapTeamEntityToDetailsDTO(TeamEntity team) {
+		List<String> memberList = team.getMembers().stream().map(member -> member.getUsername()).toList();
+		return new TeamDetailsDTO(team.getId(), team.getName(), team.getDescription(), team.getMembers().size(), team.getCustomer().getId(), team.getCustomer().getName(), memberList);
+	}
+
 	/**
 	 * this method checks, if the user is member of the team
 	 *
