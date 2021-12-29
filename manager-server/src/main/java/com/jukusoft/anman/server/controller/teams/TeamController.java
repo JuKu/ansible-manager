@@ -106,7 +106,7 @@ public class TeamController {
 		//check, if the team belongs to the same customer
 		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
 			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
-			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(new SuccessResponseDTO(false), HttpStatus.FORBIDDEN);
 		}
 
 		teamService.addUserAsMemberOfTeam(teamID, newMemberID);
@@ -122,7 +122,7 @@ public class TeamController {
 		//check, if the team belongs to the same customer
 		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
 			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
-			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(new SuccessResponseDTO(false), HttpStatus.FORBIDDEN);
 		}
 
 		teamService.removeUserAsMemberOfTeam(memberIDToRemove, teamID);
