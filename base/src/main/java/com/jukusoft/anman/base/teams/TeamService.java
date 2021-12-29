@@ -114,7 +114,7 @@ public class TeamService {
 
 	}
 
-	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+	@Transactional
 	public boolean checkForSameCustomer(CustomerEntity customer, long teamID) {
 		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
 
