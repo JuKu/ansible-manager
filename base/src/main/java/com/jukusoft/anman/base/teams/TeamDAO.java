@@ -2,8 +2,6 @@ package com.jukusoft.anman.base.teams;
 
 import com.jukusoft.anman.base.dao.RefreshDAO;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;

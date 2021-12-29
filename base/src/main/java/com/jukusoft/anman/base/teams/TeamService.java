@@ -88,7 +88,6 @@ public class TeamService {
 			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())")
 	})
 	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
-	//@Modifying(flushAutomatically = true, clearAutomatically = true)
 	public void deleteTeam(CustomerEntity customer, long teamID, boolean checkForCustomer) {
 		LOGGER.info("delete team with id: {}", teamID);
 
@@ -98,7 +97,6 @@ public class TeamService {
 				throw new IllegalStateException("this team (id: " + teamID + ") does not belong to customer '" + customer.getName() + "', so it cannot be deleted.");
 			}
 		}
-		//teamDAO.refresh(team);
 
 		//clear cache of users which are members of this team
 		deleteAllTeamMembers(teamID);

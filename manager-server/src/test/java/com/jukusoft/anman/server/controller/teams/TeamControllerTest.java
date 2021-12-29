@@ -119,18 +119,18 @@ class TeamControllerTest extends WebTest {
 	}
 
 	@Test
-	//@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+		//@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 	void testListOwnTeamsAsAuthenticatedUser() {
 		teamDAO.deleteAll();
 		flushDB();
 
 		//verify, that no other team exists
-		assertThat(teamDAO.count()).isEqualTo(0);
+		assertThat(teamDAO.count()).isZero();
 		assertThat(userDAO.count()).isEqualTo(1);
-		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isEqualTo(0);
+		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isZero();
 
 		//TODO: check why this method call fixes the cache problem
-		assertThat(teamService.listTeamsOfUser(userDAO.findAll().stream().findFirst().get().getUserID()).size()).isEqualTo(0);
+		assertThat(teamService.listTeamsOfUser(userDAO.findAll().stream().findFirst().get().getUserID()).size()).isZero();
 
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
 		ResponseEntity<List> response = executeAuthenticatedRequest("/teams/list-own-teams", HttpMethod.GET, List.class, jwtToken);
@@ -146,9 +146,9 @@ class TeamControllerTest extends WebTest {
 		teamDAO.deleteAll();
 
 		//verify, that no other team exists
-		assertThat(teamDAO.count()).isEqualTo(0);
+		assertThat(teamDAO.count()).isZero();
 		assertThat(userDAO.count()).isEqualTo(1);
-		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isEqualTo(0);
+		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isZero();
 
 		//login
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
@@ -174,9 +174,9 @@ class TeamControllerTest extends WebTest {
 	@Test
 	void testListAllCustomerTeams() {
 		//verify, that no other team exists
-		assertThat(teamDAO.count()).isEqualTo(0);
+		assertThat(teamDAO.count()).isZero();
 		assertThat(userDAO.count()).isEqualTo(1);
-		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isEqualTo(0);
+		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isZero();
 
 		//login
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
@@ -200,7 +200,7 @@ class TeamControllerTest extends WebTest {
 		teamDAO.deleteAll();
 		flushDB();
 
-		assertThat(teamDAO.count()).isEqualTo(0);
+		assertThat(teamDAO.count()).isZero();
 	}
 
 	protected List<TeamDTO> listOwnTeams(String jwtToken) {

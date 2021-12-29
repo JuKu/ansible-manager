@@ -3,13 +3,11 @@ package com.jukusoft.anman.base.teams;
 import com.jukusoft.anman.base.entity.general.AbstractEntity;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
-import org.apache.catalina.User;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +28,8 @@ import java.util.Set;
 public class TeamEntity extends AbstractEntity {
 
 	@ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
-	@JoinColumn(name = "customer_id", nullable = false, updatable = false)//don't use an extra table, use join column instead
+	@JoinColumn(name = "customer_id", nullable = false, updatable = false)
+//don't use an extra table, use join column instead
 	private CustomerEntity customer;
 
 	/**
@@ -62,8 +61,8 @@ public class TeamEntity extends AbstractEntity {
 	/**
 	 * default constructor.
 	 *
-	 * @param customer the customer, where the teams belongs to
-	 * @param name the name of the team
+	 * @param customer    the customer, where the teams belongs to
+	 * @param name        the name of the team
 	 * @param description the description of the team
 	 */
 	public TeamEntity(CustomerEntity customer, String name, String description) {
