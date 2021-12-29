@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.data.repository.CrudRepository;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
+import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 
 /**
  * @author Justin Kuenzel
@@ -55,5 +56,10 @@ public class ArchitectureTest {
 			.orShould().beProtected()
 			.andShould().beStatic()
 			.andShould().beFinal();
+
+	//see also: https://medium.com/free-code-camp/java-archunit-testing-the-architecture-a09f089585be
+	@ArchTest
+	public static final ArchRule rule = slices().matching("..utils.(*)..")
+			.should().beFreeOfCycles();
 
 }
