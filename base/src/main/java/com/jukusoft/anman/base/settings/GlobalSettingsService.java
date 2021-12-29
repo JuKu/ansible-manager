@@ -26,7 +26,7 @@ public class GlobalSettingsService {
 	/**
 	 * the logger.
 	 */
-	private static Logger logger = LoggerFactory.getLogger(GlobalSettingsService.class);
+	private static final Logger logger = LoggerFactory.getLogger(GlobalSettingsService.class);
 
 	/**
 	 * settings DAO (repository).

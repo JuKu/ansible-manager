@@ -3,10 +3,10 @@ package de.jukusoft.anman.tests;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import org.slf4j.Logger;
 import org.springframework.data.repository.CrudRepository;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 
 /**
  * @author Justin Kuenzel
@@ -44,6 +44,16 @@ public class ArchitectureTest {
 
 	@ArchTest
 	public static final ArchRule daosShouldEndWithDAOSuffix = classes().that().implement(CrudRepository.class)
-			.should().haveSimpleNameContaining("DAO");
+			.should().haveSimpleNameEndingWith("DAO")
+			.orShould().haveSimpleNameEndingWith("DAOImpl");
+
+	// verify that logger fields are private, static and final, see also: https://www.javacodegeeks.com/2020/02/validating-code-and-architecture-constraints-with-archunit.html
+	@ArchTest
+	private final ArchRule loggers_should_be_private_static_final = fields()
+			.that().haveRawType(Logger.class)
+			.should().bePrivate()
+			.orShould().beProtected()
+			.andShould().beStatic()
+			.andShould().beFinal();
 
 }

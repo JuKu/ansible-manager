@@ -31,7 +31,7 @@ public class UniqueApplicationContextConfig implements ApplicationContextAware {
     /**
      * the logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(UniqueApplicationContextConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(UniqueApplicationContextConfig.class);
 
     /**
      * the singleton unique application context.
