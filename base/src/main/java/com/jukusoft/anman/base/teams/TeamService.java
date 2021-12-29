@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -121,11 +120,7 @@ public class TeamService {
 	protected boolean checkForSameCustomer(CustomerEntity customer, long teamID) {
 		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
 
-		if (team.getCustomer().getId() != customer.getId()) {
-			return false;
-		}
-
-		return true;
+		return team.getCustomer().getId() == customer.getId();
 	}
 
 	@Transactional(value = Transactional.TxType.REQUIRES_NEW)

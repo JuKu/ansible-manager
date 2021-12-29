@@ -185,6 +185,7 @@ class TeamServiceTest extends DBTest {
 		assertFalse(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), teamID));
 		assertFalse(teamService.checkIfUserIsMemberOfTeam(getDefaultUser().getId(), teamIDToDelete));
 
+		teamService.cleanAllCaches();
 		cleanUp();
 	}
 
