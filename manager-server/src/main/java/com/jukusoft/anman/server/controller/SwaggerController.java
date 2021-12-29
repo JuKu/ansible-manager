@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SwaggerController {
 
-    /**
-     * redirect /swagger to the swagger controller.
-     *
-     * @return redirect url
-     */
-    @GetMapping("/swagger")
-    public String redirectToSwaggerUI() {
-        return "redirect:/swagger-ui.html";
-    }
+	/**
+	 * redirect /swagger to the swagger controller.
+	 *
+	 * @return redirect url
+	 */
+	@GetMapping("/swagger")
+	public String redirectToSwaggerUI() {
+		return "redirect:/swagger-ui.html";
+	}
 
 }

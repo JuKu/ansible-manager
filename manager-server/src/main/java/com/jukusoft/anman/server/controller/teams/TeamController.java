@@ -4,6 +4,9 @@ import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.teams.TeamDTO;
 import com.jukusoft.anman.base.teams.TeamService;
 import com.jukusoft.anman.base.utils.UserHelperService;
+import com.jukusoft.anman.server.controller.SuccessResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,8 @@ import java.util.List;
  */
 @RestController("/teams")
 public class TeamController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TeamController.class);
 
 	private final TeamService teamService;
 
@@ -90,6 +95,37 @@ public class TeamController {
 		teamService.deleteTeam(userHelperService.getCurrentCustomer(), teamID, true);
 
 		return new ResponseEntity<>("success", HttpStatus.OK);
+	}
+
+	@PostMapping(path = "/teams/add-member")
+	public ResponseEntity<SuccessResponseDTO> addTeamMember(@RequestParam("teamID") long teamID, @RequestParam("memberID") long newMemberID) {
+		//TODO: check permissions
+
+		LOGGER.info("try to add team member to team, teamID: {}, memberID: {}", teamID, newMemberID);
+
+		//check, if the team belongs to the same customer
+		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
+			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+
+		teamService.addUserAsMemberOfTeam(teamID, newMemberID);
+		return new ResponseEntity<>(new SuccessResponseDTO(true), HttpStatus.OK);
+	}
+
+	public ResponseEntity<SuccessResponseDTO> removeTeamMember(@RequestParam("teamID") long teamID, @RequestParam("memberID") long memberIDToRemove) {
+		//TODO: check permissions
+
+		LOGGER.info("try to remove team member from team, teamID: {}, memberID: {}", teamID, memberIDToRemove);
+
+		//check, if the team belongs to the same customer
+		if (!teamService.checkForSameCustomer(userHelperService.getCurrentCustomer(), teamID)) {
+			LOGGER.warn("Security violation - the requested team (to add team member) does not belongs to the customer");
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+
+		teamService.removeUserAsMemberOfTeam(memberIDToRemove, teamID);
+		return new ResponseEntity<>(new SuccessResponseDTO(true), HttpStatus.OK);
 	}
 
 }
