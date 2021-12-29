@@ -62,6 +62,14 @@ class TeamServiceTest extends DBTest {
 		assertEquals("new-team-title", team.title());
 		assertEquals("new-team-description", team.description());
 
+		TeamDetailsDTO teamDetailsDTO = teamService.getTeamDetails(teamID).orElseThrow();
+		assertEquals("new-team-title", teamDetailsDTO.title());
+		assertEquals("new-team-description", teamDetailsDTO.description());
+		assertEquals(getDefaultCustomer().getId(), teamDetailsDTO.customerID());
+		assertEquals(getDefaultCustomer().getName(), teamDetailsDTO.customerName());
+		assertEquals(1, teamDetailsDTO.memberCount());
+		assertTrue(teamDetailsDTO.memberList().contains(getDefaultUser().getUsername()));
+
 		//cleanup
 		cleanUp();
 	}
