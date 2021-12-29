@@ -61,7 +61,7 @@ public class TeamService {
 	@Transactional
 	@Caching(evict = {
 			@CacheEvict(cacheNames = "teams_of_user", key = "'teams_of_user_'.concat(#firstTeamOwner.getUserID())"),
-			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())")
+			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())"),
 	})
 	public long addTeam(CustomerEntity customer, UserEntity firstTeamOwner, String name, String description) {
 		LOGGER.info("create a new team with name: '{}' (customer: {}, creator user: {})", name, customer.getId(), firstTeamOwner.getUserID());
@@ -85,6 +85,7 @@ public class TeamService {
 
 	@Caching(evict = {
 			@CacheEvict(cacheNames = "team_dto", key = "'team_dto_'.concat(#teamID)"),
+			@CacheEvict(cacheNames = "team_details", key = "'team_details_'.concat(#teamID)"),
 			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())")
 	})
 	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
@@ -121,6 +122,9 @@ public class TeamService {
 		return team.getCustomer().getId() == customer.getId();
 	}
 
+	@Caching(evict = {
+			@CacheEvict(cacheNames = "team_details", key = "'team_details_'.concat(#teamID)"),
+	})
 	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 	protected void deleteAllTeamMembers(long teamID) {
 		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
@@ -200,7 +204,10 @@ public class TeamService {
 		return teamEntityOpt.get().getMembers().contains(userEntityOpt.get());
 	}
 
-	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
+	@Caching(evict = {
+			@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)"),
+			@CacheEvict(cacheNames = "team_details", key = "'team_details_'.concat(#teamID)"),
+	})
 	@Transactional
 	public void addUserAsMemberOfTeam(long userID, long teamID) {
 		UserEntity userEntity = userHelperService.getUserById(userID).orElseThrow();
@@ -213,7 +220,10 @@ public class TeamService {
 		cleanTeamsOfUserCache(userID);
 	}
 
-	@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)")
+	@Caching(evict = {
+			@CacheEvict(cacheNames = "team_member_state", key = "'team_member_state_'.concat(#userID).concat('_').concat(#teamID)"),
+			@CacheEvict(cacheNames = "team_details", key = "'team_details_'.concat(#teamID)"),
+	})
 	@Transactional
 	public void removeUserAsMemberOfTeam(long userID, long teamID) {
 		UserEntity userEntity = userHelperService.getUserById(userID).orElseThrow();
@@ -254,7 +264,8 @@ public class TeamService {
 	@Caching(evict = {
 			@CacheEvict(cacheNames = "team_member_state", allEntries = true),
 			@CacheEvict(cacheNames = "team_list_by_customer", allEntries = true),
-			@CacheEvict(cacheNames = "teams_of_user", allEntries = true)
+			@CacheEvict(cacheNames = "teams_of_user", allEntries = true),
+			@CacheEvict(cacheNames = "team_member_state", allEntries = true)
 	})
 	public void cleanAllCaches() {
 		LOGGER.info("Clean all TeamService caches");
