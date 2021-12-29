@@ -44,6 +44,6 @@ public class ArchitectureTest {
 
 	@ArchTest
 	public static final ArchRule daosShouldEndWithDAOSuffix = classes().that().implement(CrudRepository.class)
-			.should().haveSimpleNameEndingWith("DAO");
+			.should().haveSimpleNameContaining("DAO");
 
 }
