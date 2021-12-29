@@ -88,20 +88,49 @@ public class TeamService {
 			@CacheEvict(cacheNames = "team_dto", key = "'team_dto_'.concat(#teamID)"),
 			@CacheEvict(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customer.getId())")
 	})
-	@Transactional
-	@Modifying(flushAutomatically = true, clearAutomatically = true)
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+	//@Modifying(flushAutomatically = true, clearAutomatically = true)
 	public void deleteTeam(CustomerEntity customer, long teamID, boolean checkForCustomer) {
-		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
+		LOGGER.info("delete team with id: {}", teamID);
 
 		//first, check if the team belongs to this customer, so the user can delete it
 		if (checkForCustomer) {
-			if (team.getCustomer().getId() != customer.getId()) {
+			if (!checkForSameCustomer(customer, teamID)) {
 				throw new IllegalStateException("this team (id: " + teamID + ") does not belong to customer '" + customer.getName() + "', so it cannot be deleted.");
 			}
 		}
+		//teamDAO.refresh(team);
+
+		//clear cache of users which are members of this team
+		deleteAllTeamMembers(teamID);
+
+		//delete team from customer to avoid caching issues
+		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
+		CustomerEntity customer1 = team.getCustomer();
+		customer1.removeTeam(team);
+		customerDAO.save(customer1);
 
 		teamDAO.deleteById(teamID);
-		teamDAO.refresh(team);
+
+		//clear cache
+		this.cleanTeamMemberCacheByCustomer(customer.getId());
+
+	}
+
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+	protected boolean checkForSameCustomer(CustomerEntity customer, long teamID) {
+		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
+
+		if (team.getCustomer().getId() != customer.getId()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+	protected void deleteAllTeamMembers(long teamID) {
+		TeamEntity team = teamDAO.findOneById(teamID).orElseThrow();
 
 		//clear cache of users which are members of this team
 		for (UserEntity member : team.getMembers()) {
@@ -111,11 +140,12 @@ public class TeamService {
 			//TODO: this is a quick & dirty fix. Fix the caching instead.
 			userDAO.refresh(member);
 			member.removeTeam(team);
-			userDAO.save(member);
+			member = userDAO.save(member);
+
+			team.removeMember(member);
 		}
 
-		//clear cache
-		this.cleanTeamMemberCacheByCustomer(customer.getId());
+		teamDAO.save(team);
 	}
 
 	@Cacheable(cacheNames = "team_list_by_customer", key = "'team_list_by_customer_'.concat(#customerID)")

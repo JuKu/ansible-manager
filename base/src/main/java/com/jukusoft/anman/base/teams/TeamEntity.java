@@ -3,6 +3,7 @@ package com.jukusoft.anman.base.teams;
 import com.jukusoft.anman.base.entity.general.AbstractEntity;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.anman.base.entity.user.UserEntity;
+import org.apache.catalina.User;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
@@ -51,7 +52,7 @@ public class TeamEntity extends AbstractEntity {
 	/**
 	 * a list of all team members.
 	 */
-	@ManyToMany(/*mappedBy = "teams",*/ cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@ManyToMany(/*mappedBy = "teams",*/ /*cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE},*/ fetch = FetchType.LAZY)
 	@JoinTable(
 			name = "team_members",
 			joinColumns = @JoinColumn(name = "team_id"),
@@ -111,6 +112,14 @@ public class TeamEntity extends AbstractEntity {
 	public final void prePersist1() {
 		if (this.members == null) {
 			this.members = new HashSet<>();
+		}
+	}
+
+	@PreRemove
+	public final void preRemove() {
+		for (UserEntity member : members) {
+			//remove team from user, see also: https://stackoverflow.com/questions/22688402/delete-not-working-with-jparepository
+			member.removeTeam(this);
 		}
 	}
 

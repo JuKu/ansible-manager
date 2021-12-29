@@ -8,7 +8,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This entity represents a single customer (a company).
@@ -46,7 +48,7 @@ public class CustomerEntity extends AbstractEntity {
 	 */
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@Column(name = "customer")
-	private List<TeamEntity> teams;
+	private Set<TeamEntity> teams = new HashSet<>();
 
 	/**
 	 * a flag, if the customer is deletable.
@@ -95,7 +97,15 @@ public class CustomerEntity extends AbstractEntity {
 	}
 
 	public List<TeamEntity> getTeams() {
-		return teams;
+		return teams.stream().toList();
+	}
+
+	public void addTeam(TeamEntity team) {
+		this.teams.add(team);
+	}
+
+	public void removeTeam(TeamEntity team) {
+		this.teams.remove(team);
 	}
 
 	public boolean isDeletable() {
@@ -117,7 +127,7 @@ public class CustomerEntity extends AbstractEntity {
 	@PrePersist
 	public final void prePersist1() {
 		if (this.teams == null) {
-			this.teams = new ArrayList<>();
+			this.teams = new HashSet<>();
 		}
 	}
 

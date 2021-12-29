@@ -126,6 +126,7 @@ class TeamServiceTest extends DBTest {
 	 * this test verifys, that the deletion of teams works as expected
 	 */
 	@Test
+	@Transactional
 	void testDeleteTeam() throws Exception {
 		//first, import the default customer
 		importDefaultCustomer();
@@ -137,6 +138,7 @@ class TeamServiceTest extends DBTest {
 
 		//first, create a new team to test
 		long teamID = createTeam("test-title1", "test-description1");
+		assertTrue(teamDAO.existsById(teamID));
 		flushDB();
 
 		assertEquals(1, teamDAO.count());
@@ -152,6 +154,10 @@ class TeamServiceTest extends DBTest {
 
 		//delete the first team
 		teamService.deleteTeam(getDefaultCustomer(), teamID, true);
+		flushDB();
+
+		assertFalse(teamDAO.existsById(teamID));
+		flushDB();
 
 		//check, if the team is no longer available
 		assertEquals(10, teamDAO.count());
