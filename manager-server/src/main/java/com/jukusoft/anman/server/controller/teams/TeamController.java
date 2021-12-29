@@ -101,7 +101,7 @@ public class TeamController {
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
-	@PostMapping(path = "/teams/add-member")
+	@PutMapping(path = "/teams/add-member")
 	public ResponseEntity<SuccessResponseDTO> addTeamMember(@RequestParam("teamID") long teamID, @RequestParam("memberID") long newMemberID) {
 		//TODO: check permissions
 

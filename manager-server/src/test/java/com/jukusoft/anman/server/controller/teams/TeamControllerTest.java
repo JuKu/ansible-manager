@@ -2,10 +2,13 @@ package com.jukusoft.anman.server.controller.teams;
 
 import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.anman.base.dao.UserDAO;
+import com.jukusoft.anman.base.entity.user.UserEntity;
 import com.jukusoft.anman.base.teams.TeamDAO;
 import com.jukusoft.anman.base.teams.TeamDTO;
+import com.jukusoft.anman.base.teams.TeamDetailsDTO;
 import com.jukusoft.anman.base.teams.TeamService;
 import com.jukusoft.anman.base.utils.UserHelperService;
+import com.jukusoft.anman.server.controller.SuccessResponseDTO;
 import com.jukusoft.anman.server.utils.WebTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -173,6 +178,8 @@ class TeamControllerTest extends WebTest {
 
 	@Test
 	void testListAllCustomerTeams() {
+		deleteAllTeams();
+
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isZero();
 		assertThat(userDAO.count()).isEqualTo(1);
@@ -197,6 +204,90 @@ class TeamControllerTest extends WebTest {
 		//TODO: add check that teams from other customers are hidden
 
 		//clean up
+		teamDAO.deleteAll();
+		flushDB();
+
+		assertThat(teamDAO.count()).isZero();
+	}
+
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+	protected void deleteAllTeams() {
+		teamDAO.deleteAll();
+	}
+
+	@Test
+	void testCreateAndDeleteTeam() {
+		assertThat(teamDAO.count()).isZero();
+
+		//login
+		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
+
+		//create customer team
+		TeamDTO team = new TeamDTO(0, "test-team11", "test-description1");
+		ResponseEntity<String> response = executeAuthenticatedRequest("/teams/create-team", HttpMethod.PUT, String.class, jwtToken, team);
+		flushDB();
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(teamDAO.count()).isEqualTo(1);
+
+		long teamID = Long.parseLong(response.getBody());
+
+		//delete team again
+		response = executeAuthenticatedRequest("/teams/delete-team/" + teamID, HttpMethod.DELETE, String.class, jwtToken, team);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		assertThat(teamDAO.count()).isZero();
+
+		teamDAO.deleteAll();
+		flushDB();
+	}
+
+	//@Test
+	void testAddTeamMembers() {
+		assertThat(teamDAO.count()).isZero();
+
+		//login
+		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
+
+		//create customer team
+		TeamDTO team = new TeamDTO(0, "test-team2", "test-description2");
+		ResponseEntity<String> response = executeAuthenticatedRequest("/teams/create-team", HttpMethod.PUT, String.class, jwtToken, team);
+		flushDB();
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(teamDAO.count()).isEqualTo(1);
+
+		long teamID = Long.parseLong(response.getBody());
+
+		//first, check the current count of the team members
+		ResponseEntity<TeamDetailsDTO> response1 = executeAuthenticatedRequest("/teams/details/" + teamID, HttpMethod.GET, TeamDetailsDTO.class, jwtToken, team);
+		assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response1.getBody()).isNotNull();
+
+		TeamDetailsDTO teamDetailsDTO = response1.getBody();
+		assertThat(teamDetailsDTO.teamID()).isEqualTo(teamID);
+		assertThat(teamDetailsDTO.memberCount()).isEqualTo(1);
+
+		//create a new user
+		UserEntity newUser = new UserEntity(getDefaultCustomer(), "new-user", "New-User", "New-User");
+		newUser = userDAO.save(newUser);
+		long newUserId = newUser.getUserID();
+
+		//add team members
+		MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+		requestParams.add("teamID", Long.toString(teamID));
+		requestParams.add("memberID", Long.toString(newUserId));
+		ResponseEntity<SuccessResponseDTO> response2 = executeAuthenticatedRequestWithRequestData("/teams/add-member" + teamID, HttpMethod.PUT, SuccessResponseDTO.class, jwtToken, requestParams);
+		assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response2.getBody().success()).isTrue();
+
+		//delete team again
+		response = executeAuthenticatedRequest("/teams/delete-team/" + teamID, HttpMethod.DELETE, String.class, jwtToken, team);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		assertThat(teamDAO.count()).isZero();
+
+		userDAO.deleteById(newUserId);
 		teamDAO.deleteAll();
 		flushDB();
 

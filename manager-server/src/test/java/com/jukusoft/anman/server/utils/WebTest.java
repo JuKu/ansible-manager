@@ -1,11 +1,10 @@
 package com.jukusoft.anman.server.utils;
 
 import com.jukusoft.anman.base.dao.CustomerDAO;
+import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.authentification.jwt.AuthentificationRequest;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -13,6 +12,7 @@ import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.MultiValueMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -51,6 +51,9 @@ public abstract class WebTest {
 	@PersistenceContext
 	protected EntityManager em;
 
+	@Autowired
+	private CustomerDAO customerDAO;
+
 	/**
 	 * this method checks, if a specific endpoint url returns the correct http status code.
 	 * This is e.q. useful, if you want check, that endpoints are not public accessable.
@@ -75,6 +78,11 @@ public abstract class WebTest {
 		return restTemplate.exchange(url, method, entity, resClass, urlVariables);
 	}
 
+	protected <T> ResponseEntity<T> executeAuthenticatedRequestWithRequestData(String url, HttpMethod method, Class<T> resClass, String jwtToken, MultiValueMap<String, String> requestParams, Object... urlVariables) {
+		HttpEntity<?> entity = createRequestDataHttpEntity(jwtToken, requestParams);
+		return restTemplate.exchange(url, method, entity, resClass, urlVariables);
+	}
+
 	private HttpEntity createHttpEntity(String jwtToken, Object... urlVariables) {
 		//create the required HttpEntity
 		HttpHeaders headers = new HttpHeaders();
@@ -96,6 +104,19 @@ public abstract class WebTest {
 		}
 
 		return entity;
+	}
+
+	private HttpEntity createRequestDataHttpEntity(String jwtToken, MultiValueMap<String, String> requestParams) {
+		//create the required HttpEntity
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+		if (jwtToken != null) {
+			headers.set("Authorization", "Bearer " + jwtToken);
+		}
+
+		return new HttpEntity<>(requestParams, headers);
 	}
 
 	/**
@@ -141,6 +162,10 @@ public abstract class WebTest {
 		}
 
 		return Optional.of(response.getBody());
+	}
+
+	protected CustomerEntity getDefaultCustomer() {
+		return customerDAO.findOneByName("super-admin").orElseThrow();
 	}
 
 	protected void flushDB() {
