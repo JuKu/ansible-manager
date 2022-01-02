@@ -52,6 +52,38 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- generate typescript classes from DTOs, see also: https://dev.to/vuongddang/generate-typescript-from-java-2hb8 -->
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>2.34.976</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <!-- <classes>
+                        <class>com.jukusoft.anman.base.settings.SettingDTO</class>
+                        <class>com.jukusoft.anman.base.teams.TeamDTO</class>
+                        <class>com.jukusoft.anman.base.teams.TeamDetailsDTO</class>
+                    </classes> -->
+                    <classPatterns>com.jukusoft.anman.**.*DTO</classPatterns>
+                    <outputFile>target/dtos.ts</outputFile>
+                    <outputKind>module</outputKind>
+                    <outputFileType>implementationFile</outputFileType>
+                    <mapClasses>asClasses</mapClasses>
+                    <mapEnum>asEnum</mapEnum>
+                    <nonConstEnums>true</nonConstEnums>
+                    <optionalProperties>useLibraryDefinition</optionalProperties>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
