@@ -299,7 +299,7 @@ class TeamControllerTest extends WebTest {
 		LOGGER.info("created new user with id: {}", newUserId);
 
 		assertThat(newUserId).isPositive();
-		assertThat(userDAO.findById(newUserId).isPresent()).isTrue();
+		assertThat(userDAO.findById(newUserId)).isPresent();
 		assertThat(userDAO.count()).isEqualTo(2);
 		flushDB();
 
