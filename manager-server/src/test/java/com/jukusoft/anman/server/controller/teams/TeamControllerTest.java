@@ -311,6 +311,24 @@ class TeamControllerTest extends WebTest {
 		assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response2.getBody().success()).isTrue();
 
+		//check, that team member was added
+		TeamDetailsDTO teamDetailsDTO1 = getTeamDetails(jwtToken, teamID);
+		assertThat(teamDetailsDTO1.memberCount()).isEqualTo(2);
+		assertThat(teamDetailsDTO1.memberList()).contains("new-user");
+
+		//delete team member again
+		requestParams = new LinkedMultiValueMap<>();
+		requestParams.add("teamID", Long.toString(teamID));
+		requestParams.add("memberID", Long.toString(newUserId));
+		response2 = executeAuthenticatedRequestWithRequestData("/teams/remove-member", HttpMethod.DELETE, SuccessResponseDTO.class, jwtToken, requestParams);
+		assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response2.getBody().success()).isTrue();
+
+		//check, that team member was removed
+		teamDetailsDTO1 = getTeamDetails(jwtToken, teamID);
+		assertThat(teamDetailsDTO1.memberCount()).isEqualTo(1);
+		assertThat(teamDetailsDTO1.memberList().contains("new-user")).isFalse();
+
 		//delete team again
 		response = executeAuthenticatedRequest("/teams/delete-team/" + teamID, HttpMethod.DELETE, String.class, jwtToken, team);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -322,6 +340,17 @@ class TeamControllerTest extends WebTest {
 		flushDB();
 
 		assertThat(teamDAO.count()).isZero();
+	}
+
+	private TeamDetailsDTO getTeamDetails(String jwtToken, long teamID) {
+		ResponseEntity<TeamDetailsDTO> response1 = executeAuthenticatedRequest("/teams/details/" + teamID, HttpMethod.GET, TeamDetailsDTO.class, jwtToken);
+		assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response1.getBody()).isNotNull();
+
+		TeamDetailsDTO teamDetailsDTO = response1.getBody();
+		assertThat(teamDetailsDTO.teamID()).isEqualTo(teamID);
+
+		return response1.getBody();
 	}
 
 	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
