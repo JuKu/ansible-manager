@@ -3,7 +3,11 @@ package com.jukusoft.anman.server.utils;
 import com.jukusoft.anman.base.dao.CustomerDAO;
 import com.jukusoft.anman.base.entity.general.CustomerEntity;
 import com.jukusoft.authentification.jwt.AuthentificationRequest;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -39,8 +43,11 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 		"auth.providers=local-database",
 		"spring.test.database.replace=NONE",
 		"spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1",
+		//"hibernate.cache.use_second_level_cache=false",
 })
 public abstract class WebTest {
+
+	protected static final Logger LOGGER = LoggerFactory.getLogger(WebTest.class);
 
 	@LocalServerPort
 	protected int port;

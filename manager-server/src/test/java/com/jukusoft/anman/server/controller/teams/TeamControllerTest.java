@@ -10,6 +10,10 @@ import com.jukusoft.anman.base.teams.TeamService;
 import com.jukusoft.anman.base.utils.UserHelperService;
 import com.jukusoft.anman.server.controller.SuccessResponseDTO;
 import com.jukusoft.anman.server.utils.WebTest;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -38,7 +46,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@WebMvcTest(TeamController.class)
-@ActiveProfiles({"test", "user-creation-importer"})
+@ActiveProfiles({"test", "user-creation-importer", "junit-test-create-second-user"})
 @DirtiesContext(classMode = AFTER_CLASS)
 @Transactional
 class TeamControllerTest extends WebTest {
@@ -75,6 +83,18 @@ class TeamControllerTest extends WebTest {
 
 	@Autowired
 	private TeamService teamService;
+
+	/*@Autowired
+	private PlatformTransactionManager transactionManager;
+
+	private TransactionTemplate transactionTemplate;
+
+	@BeforeEach
+	void setUp() {
+		LOGGER.info("Use own transaction template");
+		transactionTemplate = new TransactionTemplate(transactionManager);
+	}*/
+
 
 	/**
 	 * checks the constructor (that no exception is thrown).
@@ -131,7 +151,7 @@ class TeamControllerTest extends WebTest {
 
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isZero();
-		assertThat(userDAO.count()).isEqualTo(1);
+		assertThat(userDAO.count()).isEqualTo(2);
 		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isZero();
 
 		//TODO: check why this method call fixes the cache problem
@@ -152,7 +172,7 @@ class TeamControllerTest extends WebTest {
 
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isZero();
-		assertThat(userDAO.count()).isEqualTo(1);
+		assertThat(userDAO.count()).isEqualTo(2);
 		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isZero();
 
 		//login
@@ -182,7 +202,7 @@ class TeamControllerTest extends WebTest {
 
 		//verify, that no other team exists
 		assertThat(teamDAO.count()).isZero();
-		assertThat(userDAO.count()).isEqualTo(1);
+		assertThat(userDAO.count()).isEqualTo(2);
 		assertThat(userDAO.findAll().stream().findFirst().get().getTeams().size()).isZero();
 
 		//login
@@ -242,9 +262,14 @@ class TeamControllerTest extends WebTest {
 		flushDB();
 	}
 
-	//@Test
+	@Test
+	@Transactional
 	void testAddTeamMembers() {
 		assertThat(teamDAO.count()).isZero();
+
+		/*Session session = em.unwrap(Session.class);
+		session.clear();
+		session.setHibernateFlushMode(FlushMode.ALWAYS);*/
 
 		//login
 		String jwtToken = loginGetJWTToken("admin", "admin", true).orElseThrow();
@@ -269,15 +294,20 @@ class TeamControllerTest extends WebTest {
 		assertThat(teamDetailsDTO.memberCount()).isEqualTo(1);
 
 		//create a new user
-		UserEntity newUser = new UserEntity(getDefaultCustomer(), "new-user", "New-User", "New-User");
-		newUser = userDAO.save(newUser);
+		UserEntity newUser = userDAO.findOneByUsername("new-user").orElseThrow();
 		long newUserId = newUser.getUserID();
+		LOGGER.info("created new user with id: {}", newUserId);
+
+		assertThat(newUserId).isPositive();
+		assertThat(userDAO.findById(newUserId).isPresent()).isTrue();
+		assertThat(userDAO.count()).isEqualTo(2);
+		flushDB();
 
 		//add team members
 		MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
 		requestParams.add("teamID", Long.toString(teamID));
 		requestParams.add("memberID", Long.toString(newUserId));
-		ResponseEntity<SuccessResponseDTO> response2 = executeAuthenticatedRequestWithRequestData("/teams/add-member" + teamID, HttpMethod.PUT, SuccessResponseDTO.class, jwtToken, requestParams);
+		ResponseEntity<SuccessResponseDTO> response2 = executeAuthenticatedRequestWithRequestData("/teams/add-member", HttpMethod.PUT, SuccessResponseDTO.class, jwtToken, requestParams);
 		assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response2.getBody().success()).isTrue();
 
@@ -292,6 +322,15 @@ class TeamControllerTest extends WebTest {
 		flushDB();
 
 		assertThat(teamDAO.count()).isZero();
+	}
+
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+	protected UserEntity createNewUser() {
+		UserEntity newUser = new UserEntity(getDefaultCustomer(), "new-user", "New-User", "New-User");
+		newUser = userDAO.save(newUser);
+		flushDB();
+
+		return newUser;
 	}
 
 	protected List<TeamDTO> listOwnTeams(String jwtToken) {

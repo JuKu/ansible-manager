@@ -113,7 +113,7 @@ public class TeamController {
 			return new ResponseEntity<>(new SuccessResponseDTO(false), HttpStatus.FORBIDDEN);
 		}
 
-		teamService.addUserAsMemberOfTeam(teamID, newMemberID);
+		teamService.addUserAsMemberOfTeam(newMemberID, teamID);
 		return new ResponseEntity<>(new SuccessResponseDTO(true), HttpStatus.OK);
 	}
 
