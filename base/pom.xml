@@ -90,6 +90,20 @@
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
                 <version>${git.commit.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>validate-the-git-infos</id>
+                        <goals>
+                            <goal>validateRevision</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <failOnNoGitDirectory>true</failOnNoGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
@@ -97,6 +111,11 @@
                         ${project.build.outputDirectory}/filename.properties
                     </generateGitPropertiesFilename> -->
                     <prefix>git</prefix>
+                    <excludeProperties>
+                        <excludeProperty>git.commit.user.*</excludeProperty>
+                        <excludeProperty>git.build.user.*</excludeProperty>
+                        <excludeProperty>git.build.host</excludeProperty>
+                    </excludeProperties>
                 </configuration>
             </plugin>
         </plugins>

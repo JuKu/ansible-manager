@@ -5,7 +5,7 @@ package com.jukusoft.anman.base.version;
  *
  * @author Justin Kuenzel
  */
-public record VersionDTO(String commitId, String branch, String version) {
+public record VersionDTO(String version, String commitId, String branch, String commitTime) {
 
 	//
 
