@@ -14,6 +14,10 @@ import org.springframework.core.io.ClassPathResource;
 @Configuration
 public class VersionConfiguration {
 
+	protected VersionConfiguration() {
+		//
+	}
+
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer propsConfig

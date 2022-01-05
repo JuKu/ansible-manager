@@ -20,7 +20,7 @@ public class VersionService {
 	private final BuildProperties buildProperties;
 	private final GitProperties gitProperties;
 
-	@Value("${info.app.version}")
+	@Value("${git.build.version}")
 	private String versionName;
 
 	@Value("${git.branch}")
@@ -29,7 +29,7 @@ public class VersionService {
 	@Value("${git.commit.id.abbrev}")
 	private String commitId;
 
-	@Value("${git.commit.committer.time}")
+	@Value("${git.commit.time}")
 	private String commitTime;
 
 	public VersionService(@Autowired final BuildProperties buildProperties, @Autowired final GitProperties gitProperties) {
@@ -38,6 +38,8 @@ public class VersionService {
 
 		this.buildProperties = buildProperties;
 		this.gitProperties = gitProperties;
+
+		//this.versionName = buildProperties.getVersion();
 	}
 
 	/**
