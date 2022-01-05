@@ -83,4 +83,23 @@
         <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
+    <build>
+        <plugins>
+            <!-- see also: https://www.baeldung.com/spring-git-information -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>${git.commit.plugin.version}</version>
+                <configuration>
+                    <failOnNoGitDirectory>true</failOnNoGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <!-- <generateGitPropertiesFilename>
+                        ${project.build.outputDirectory}/filename.properties
+                    </generateGitPropertiesFilename> -->
+                    <prefix>git</prefix>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

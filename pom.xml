@@ -62,6 +62,9 @@
 
         <archunit.version>0.22.0</archunit.version>
 
+        <!-- version of git-commit-id-plugin -->
+        <git.commit.plugin.version>4.9.10</git.commit.plugin.version>
+
         <!-- Sonar properties-->
         <!-- <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
