@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.ldap.LdapAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 /**
  * @author Justin Kuenzel
  */
-@ActiveProfiles({"test"})
+@ActiveProfiles({"test", "rest-test"})
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = RestTest.TestApplication.class)
 public abstract class RestTest {
@@ -29,6 +29,7 @@ public abstract class RestTest {
 	protected MockMvc mockMvc;
 
 	@TestConfiguration
+	@Profile("rest-test")
 	static class TestConfig {
 
 		/*@Bean
@@ -40,7 +41,8 @@ public abstract class RestTest {
 
 	@SpringBootApplication(scanBasePackages = {"com.jukusoft.anman.server.controller"})
 	@PropertySource({"classpath:base.properties"})
-	public static class TestApplication {
+	@Profile("rest-test")
+	protected static class TestApplication {
 
 		@Bean
 		@ConditionalOnMissingBean
@@ -57,7 +59,8 @@ public abstract class RestTest {
 
 	@TestConfiguration
 	@Order(1)
-	public static class TestSecurityConfig extends WebSecurityConfigurerAdapter {
+	@Profile("rest-test")
+	protected static class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		protected void configure(HttpSecurity httpSecurity) throws Exception {
 			// Disable CSRF
