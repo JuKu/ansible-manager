@@ -48,6 +48,7 @@ public class VersionService {
 	 * @return version dto
 	 */
 	public VersionDTO getVersionInformation() {
+		Objects.requireNonNull(versionName);
 		return new VersionDTO(versionName, commitId, branch, commitTime);
 	}
 
